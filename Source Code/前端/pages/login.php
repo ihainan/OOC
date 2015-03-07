@@ -9,30 +9,30 @@
    
     if($_GET["action"] == "login"){
         clearCookies();
-        $user = $db->系统用户->where("用户id",$_POST["username"])->fetch();
+        $user = $db->系统用户->where("用户id",$_POST["username"]);
         //echo $user->fetch();
         //echo $user->count("*");
        // echo $user["用户id"]." ".$user["密码"]." ".$user["用户角色"];
-        if($user->count("*") == 3){//用户名正确
-        
+        if($user->count("*") == 1){//用户名正确
+            $user = $user->fetch();
             //$i = strcmp($user["密码"],md5($_POST["password"]));
             if(strcmp($user["密码"],md5($_POST["password"])) == 0){//密码正确
                 if(0 == strcmp($user["用户角色"],"系统管理员")){
                     setcookie('username',$_POST["username"],time()+60*60*24*7);
                     setcookie('role','系统管理员',time()+60*60*24*7);
-                    header('Location:admin/index.html');
+                    header('Location:admin/index.php');
                 }else if(strcmp($user["用户角色"],"学生") == 0){
                     setcookie('username',$_POST["username"],time()+60*60*24*7);
                     setcookie('role','学生',time()+60*60*24*7);
-                    header('Location:student/index.html');
+                    header('Location:student/index.php');
                 }else if(0 == strcmp($user["用户角色"],"导师")){
                     setcookie('username',$_POST["username"],time()+60*60*24*7);
                     setcookie('role','导师',time()+60*60*24*7);
-                    header('Location:teacher/index.html');
+                    header('Location:teacher/index.php');
                 }else if(0 == strcmp($user["用户角色"],"学院管理人员")){
                     setcookie('username',$_POST["username"],time()+60*60*24*7);
                     setcookie('role','学院管理人员',time()+60*60*24*7);
-                    header('Location:manager/index.html');
+                    header('Location:manager/index.php');
                 }
             }else {
                 die("用户名或密码错误!".$_POST["password"]." ".md5($_POST["password"]." ".$user["密码"]));
@@ -43,13 +43,13 @@
     }
     //根据cookie自动登录
     if(!strcmp($_COOKIE["role"],"系统管理员")){
-        header('Location:admin/index.html');
+        header('Location:admin/index.php');
     }else if(!strcmp($_COOKIE["role"],"学生")){
-        header('Location:student/index.html');
+        header('Location:student/index.php');
     }else if(!strcmp($_COOKIE["role"],"导师")){
-        header('Location:teacher/index.html');
+        header('Location:teacher/index.php');
     }else if(!strcmp($_COOKIE["role"],"学院管理人员")){
-        header('Location:manager/index.html');
+        header('Location:manager/index.php');
     }
 ?>
 <html lang="en">

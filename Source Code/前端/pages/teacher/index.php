@@ -1,4 +1,11 @@
-<!DOCTYPE html>
+<?php
+    // print_r($_COOKIE);
+    if(strcmp($_COOKIE["role"],"导师")){
+       header("refresh:3;url=../login.php");
+       echo "无权限浏览此页，3秒后跳转...";
+       exit();
+      }
+?>
 <html lang="en">
 
 <head>
@@ -68,6 +75,9 @@
                             <a href="students.html"><i class="fa fa-users fa-fw"></i> 学生列表</a>
                         </li>
                         <li>
+                            <a href="papers.html"><i class="fa fa-pencil-square-o fa-fw"></i> 审核论文</a>
+                        </li>
+                        <li>
                             <a href="profile.html"><i class="fa fa-user fa-fw"></i> 个人资料</a>
                         </li>
                         <li>
@@ -97,7 +107,7 @@
                                     <i class="fa fa-user fa-5x"></i>
                                 </div>
                                 <div class="col-xs-9 text-right">
-                                    <div class="huge">15</div>
+                                    <div class="huge">2</div>
                                     <div>学生</div>
                                 </div>
                             </div>
@@ -119,7 +129,7 @@
                                     <i class="fa fa-list fa-5x"></i>
                                 </div>
                                 <div class="col-xs-9 text-right">
-                                    <div class="huge">12</div>
+                                    <div class="huge">2</div>
                                     <div>评审申请表</div>
                                 </div>
                             </div>
@@ -138,11 +148,11 @@
                         <div class="panel-heading">
                             <div class="row">
                                 <div class="col-xs-3">
-                                    <i class="fa fa-th-list fa-5x"></i>
+                                    <i class="fa fa-edit fa-5x"></i>
                                 </div>
                                 <div class="col-xs-9 text-right">
-                                    <div class="huge">12</div>
-                                    <div>评审信息表</div>
+                                    <div class="huge">1</div>
+                                    <div>审核论文</div>
                                 </div>
                             </div>
                         </div>
@@ -155,28 +165,7 @@
                         </a>
                     </div>
                 </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="panel panel-red">
-                        <div class="panel-heading">
-                            <div class="row">
-                                <div class="col-xs-3">
-                                    <i class="fa fa-times fa-5x"></i>
-                                </div>
-                                <div class="col-xs-9 text-right">
-                                    <div class="huge">3</div>
-                                    <div>修改说明书</div>
-                                </div>
-                            </div>
-                        </div>
-                        <a href="#">
-                            <div class="panel-footer">
-                                <span class="pull-left">查看详情</span>
-                                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                                <div class="clearfix"></div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
+
             </div>
             <!-- /.row -->
             <div class="row">
@@ -196,29 +185,29 @@
                                     </span>
                                     <div class="chat-body clearfix">
                                         <div class="header">
-                                            <strong class="primary-font">符积高</strong>
+                                            <strong class="primary-font">梁老师</strong>
                                             <small class="pull-right text-muted">
-                                                <i class="fa fa-clock-o fa-fw"></i> 12 mins ago
+                                                <i class="fa fa-clock-o fa-fw"></i> 18 mins ago
                                             </small>
                                         </div>
                                         <p>
-                                            上传了电子版研究生毕业论文。
+                                            填写了评审申请表。
                                         </p>
                                     </div>
                                 </li>
                                 <li class="left clearfix">
                                     <span class="chat-img pull-left">
-                                        <img src="http://placehold.it/50/FA6F57/fff" alt="User Avatar" class="img-circle" />
+                                        <img src="http://placehold.it/50/55C1E7/fff" alt="User Avatar" class="img-circle" />
                                     </span>
                                     <div class="chat-body clearfix">
                                         <div class="header">
-                                            <strong class="primary-font">陈凯</strong>
+                                            <strong class="primary-font">梁老师</strong>
                                             <small class="pull-right text-muted">
-                                                <i class="fa fa-clock-o fa-fw"></i> 20 mins ago
+                                                <i class="fa fa-clock-o fa-fw"></i> 15 mins ago
                                             </small>
                                         </div>
                                         <p>
-                                            提交了《北京理工大学软件学院研究生学位论文评审申请书》。
+                                            填写了评审申请表。
                                         </p>
                                     </div>
                                 </li>
@@ -239,7 +228,16 @@
                         <!-- /.panel-heading -->
                         <div class="panel-body">
                             <div class="list-group">
-
+                                <a href="#" class="list-group-item">
+                                    <i class="fa fa-comment fa-fw"></i> 您的学生符积高提交了评…
+                                    <span class="pull-right text-muted small"><em>1 小时前</em>
+                                    </span>
+                                </a>
+                                <a href="#" class="list-group-item">
+                                    <i class="fa fa-comment fa-fw"></i> 您的学生陈凯提交了评审…
+                                    <span class="pull-right text-muted small"><em>1 小时前</em>
+                                    </span>
+                                </a>
                             </div>
                             <!-- /.list-group -->
                             <a href="#" class="btn btn-default btn-block">查看所有消息</a>
@@ -278,7 +276,7 @@
         function winconfirm(){
             question = confirm("确定登出本系统？")
             if (question != "0"){
-             window.location = "../login.html"
+             window.location = "../logout.php"
             }
         }
     </script>

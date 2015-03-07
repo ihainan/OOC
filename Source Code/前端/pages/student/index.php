@@ -1,4 +1,11 @@
-<!DOCTYPE html>
+<?php
+    // print_r($_COOKIE);
+    if(strcmp($_COOKIE["role"],"学生")){
+       header("refresh:3;url=../login.php");
+       echo "无权限浏览此页，3秒后跳转...";
+       exit();
+      }
+?>
 <html lang="en">
 
 <head>
@@ -65,10 +72,31 @@
                             <a href="index.html"><i class="fa fa-dashboard fa-fw"></i> 概要</a>
                         </li>
                         <li>
-                            <a href="students.html"><i class="fa fa-users fa-fw"></i> 学生列表</a>
+                            <a href="#"><i class="fa fa-file-text-o fa-fw"></i> 审核申请<span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li>
+                                    <a href="application_form.html"> 填写申请</a>
+                                </li>
+                                <li>
+                                    <a href="application_status.html"> 审核状态</a>
+                                </li>
+                            </ul>
+                            <!-- /.nav-second-level -->
                         </li>
-                        <li>
-                            <a href="papers.html"><i class="fa fa-pencil-square-o fa-fw"></i> 审核论文</a>
+                         <li>
+                            <a href="#"><i class="fa fa-file-text-o fa-fw"></i> 论文评审<span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li>
+                                    <a href="upload_paper.html"> 上传论文</a>
+                                </li>
+                                <li>
+                                    <a href="add_modify.html"> 提交修改说明</a>
+                                </li>
+                                <li>
+                                    <a href="review_status.html"> 评审结果</a>
+                                </li>
+                            </ul>
+                            <!-- /.nav-second-level -->
                         </li>
                         <li>
                             <a href="profile.html"><i class="fa fa-user fa-fw"></i> 个人资料</a>
@@ -90,76 +118,7 @@
                 </div>
                 <!-- /.col-lg-12 -->
             </div>
-            <!-- /.row -->
-            <div class="row">
-                <div class="col-lg-3 col-md-6">
-                    <div class="panel panel-primary">
-                        <div class="panel-heading">
-                            <div class="row">
-                                <div class="col-xs-3">
-                                    <i class="fa fa-user fa-5x"></i>
-                                </div>
-                                <div class="col-xs-9 text-right">
-                                    <div class="huge">2</div>
-                                    <div>学生</div>
-                                </div>
-                            </div>
-                        </div>
-                        <a href="#">
-                            <div class="panel-footer">
-                                <span class="pull-left">查看详情</span>
-                                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                                <div class="clearfix"></div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="panel panel-green">
-                        <div class="panel-heading">
-                            <div class="row">
-                                <div class="col-xs-3">
-                                    <i class="fa fa-list fa-5x"></i>
-                                </div>
-                                <div class="col-xs-9 text-right">
-                                    <div class="huge">2</div>
-                                    <div>评审申请表</div>
-                                </div>
-                            </div>
-                        </div>
-                        <a href="#">
-                            <div class="panel-footer">
-                                <span class="pull-left">查看详情</span>
-                                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                                <div class="clearfix"></div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="panel panel-yellow">
-                        <div class="panel-heading">
-                            <div class="row">
-                                <div class="col-xs-3">
-                                    <i class="fa fa-edit fa-5x"></i>
-                                </div>
-                                <div class="col-xs-9 text-right">
-                                    <div class="huge">1</div>
-                                    <div>审核论文</div>
-                                </div>
-                            </div>
-                        </div>
-                        <a href="#">
-                            <div class="panel-footer">
-                                <span class="pull-left">查看详情</span>
-                                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                                <div class="clearfix"></div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
 
-            </div>
             <!-- /.row -->
             <div class="row">
                 <div class="col-lg-8">
@@ -178,32 +137,17 @@
                                     </span>
                                     <div class="chat-body clearfix">
                                         <div class="header">
-                                            <strong class="primary-font">梁老师</strong>
+                                            <strong class="primary-font">ihainan</strong>
                                             <small class="pull-right text-muted">
-                                                <i class="fa fa-clock-o fa-fw"></i> 18 mins ago
+                                                <i class="fa fa-clock-o fa-fw"></i> 20 mins ago
                                             </small>
                                         </div>
                                         <p>
-                                            填写了评审申请表。
+                                            填写了《研究生学位论文评审申请书》。
                                         </p>
                                     </div>
                                 </li>
-                                <li class="left clearfix">
-                                    <span class="chat-img pull-left">
-                                        <img src="http://placehold.it/50/55C1E7/fff" alt="User Avatar" class="img-circle" />
-                                    </span>
-                                    <div class="chat-body clearfix">
-                                        <div class="header">
-                                            <strong class="primary-font">梁老师</strong>
-                                            <small class="pull-right text-muted">
-                                                <i class="fa fa-clock-o fa-fw"></i> 15 mins ago
-                                            </small>
-                                        </div>
-                                        <p>
-                                            填写了评审申请表。
-                                        </p>
-                                    </div>
-                                </li>
+
                             </ul>
                         </div>
                         <!-- /.panel-body -->
@@ -222,13 +166,13 @@
                         <div class="panel-body">
                             <div class="list-group">
                                 <a href="#" class="list-group-item">
-                                    <i class="fa fa-comment fa-fw"></i> 您的学生符积高提交了评…
-                                    <span class="pull-right text-muted small"><em>1 小时前</em>
+                                    <i class="fa fa-comment fa-fw"></i> 您的论文盲审申请已经通…
+                                    <span class="pull-right text-muted small"><em>4 分钟前</em>
                                     </span>
                                 </a>
                                 <a href="#" class="list-group-item">
-                                    <i class="fa fa-comment fa-fw"></i> 您的学生陈凯提交了评审…
-                                    <span class="pull-right text-muted small"><em>1 小时前</em>
+                                    <i class="fa fa-comment fa-fw"></i> 您的导师已经填写导师意…
+                                    <span class="pull-right text-muted small"><em>15 分钟前</em>
                                     </span>
                                 </a>
                             </div>
@@ -269,7 +213,7 @@
         function winconfirm(){
             question = confirm("确定登出本系统？")
             if (question != "0"){
-             window.location = "../login.html"
+             window.location = "../logout.php"
             }
         }
     </script>

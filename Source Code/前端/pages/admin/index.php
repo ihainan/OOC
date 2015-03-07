@@ -1,4 +1,11 @@
-<!DOCTYPE html>
+<?php
+    // print_r($_COOKIE);
+    if(strcmp($_COOKIE["role"],"系统管理员")){
+       header("refresh:3;url=../login.php");
+       echo "无权限浏览此页，3秒后跳转...";
+       exit();
+      }
+?>
 <html lang="en">
 
 <head>
