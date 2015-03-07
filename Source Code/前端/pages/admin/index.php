@@ -5,6 +5,26 @@
        echo "无权限浏览此页，3秒后跳转...";
        exit();
       }
+
+    // 开启错误提示
+    error_reporting(E_ALL);
+    ini_set('display_errors', 'On');
+
+    // 引用文件
+    require_once("../../phpLibrary/users.php");
+    require_once("../../phpLibrary/notorm-master/NotORM.php");
+
+    // 初始化数据库
+    $pdo = new PDO('mysql:host=lab.ihainan.me;dbname=blind_review_db','ss','123456');
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $pdo->exec('set names utf8');
+    $db = new NotORM($pdo);
+
+    // 初始化 Users 类
+    $users = new Users($db);
+
+    // 获取不同角色用户的数量
+    $usersNum = $users -> getUsersNumber();
 ?>
 <html lang="en">
 
@@ -58,7 +78,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="index.html">研究生论文盲审系统</a>
+                <a class="navbar-brand" href="index.php">研究生论文盲审系统</a>
             </div>
             <!-- /.navbar-header -->
 
@@ -69,22 +89,22 @@
                     <ul class="nav" id="side-menu">
                         
                         <li>
-                            <a href="index.html"><i class="fa fa-dashboard fa-fw"></i> 概要</a>
+                            <a href="index.php"><i class="fa fa-dashboard fa-fw"></i> 概要</a>
                         </li>
                         <li>
                             <a href="#"><i class="fa fa-users fa-fw"></i> 用户管理<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
-                                    <a href="user_list.html"> 用户列表</a>
+                                    <a href="user_list.php"> 用户列表</a>
                                 </li>
                                 <li>
-                                    <a href="add_user.html"> 添加用户</a>
+                                    <a href="add_user.php"> 添加用户</a>
                                 </li>
                             </ul>
                             <!-- /.nav-second-level -->
                         </li>
                         <li>
-                            <a href="profile.html"><i class="fa fa-user fa-fw"></i> 个人资料</a>
+                            <a href="profile.php"><i class="fa fa-user fa-fw"></i> 个人资料</a>
                         </li>
                         <li>
                             <a href="javascript:winconfirm()"><i class="fa fa-sign-out fa-fw"></i> 登出系统</a>
@@ -113,7 +133,7 @@
                                     <i class="fa fa-user fa-5x"></i>
                                 </div>
                                 <div class="col-xs-9 text-right">
-                                    <div class="huge">1</div>
+                                    <div class="huge"><?php echo $usersNum["系统管理员"]; ?></div>
                                     <div>管理员</div>
                                 </div>
                             </div>
@@ -135,7 +155,7 @@
                                     <i class="fa fa-user fa-5x"></i>
                                 </div>
                                 <div class="col-xs-9 text-right">
-                                    <div class="huge">2</div>
+                                    <div class="huge"><?php echo $usersNum["导师"]; ?></div>
                                     <div>导师</div>
                                 </div>
                             </div>
@@ -157,7 +177,7 @@
                                     <i class="fa fa-user fa-5x"></i>
                                 </div>
                                 <div class="col-xs-9 text-right">
-                                    <div class="huge">3</div>
+                                    <div class="huge"><?php echo $usersNum["学生"]; ?></div>
                                     <div>研究生</div>
                                 </div>
                             </div>
@@ -179,7 +199,7 @@
                                     <i class="fa fa-user fa-5x"></i>
                                 </div>
                                 <div class="col-xs-9 text-right">
-                                    <div class="huge">1</div>
+                                    <div class="huge"><?php echo $usersNum["学院管理人员"]; ?></div>
                                     <div>学院管理人员</div>
                                 </div>
                             </div>

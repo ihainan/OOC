@@ -1,3 +1,32 @@
+<?php
+    // 开启错误提示
+    error_reporting(E_ALL);
+    ini_set('display_errors', 'On');
+
+    // 引用文件
+    require_once("../../phpLibrary/users.php");
+    require_once("../../phpLibrary/notorm-master/NotORM.php");
+
+    // 初始化数据库
+    $pdo = new PDO('mysql:host=lab.ihainan.me;dbname=blind_review_db','ss','123456');
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $pdo->exec('set names utf8');
+    $db = new NotORM($pdo);
+
+    // 初始化 Users 类
+    $users = new Users($db);
+
+    // 获取不同角色用户的数量
+    $usersInfo = $users -> getUsersInfo();
+
+    if(array_key_exists("userType", $_GET)){
+        $userType = $_GET["userType"];
+    }
+    else{
+        $userType = "全部";
+    }
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -43,7 +72,6 @@
     <div id="wrapper">
 
         <!-- Navigation -->
-        <!-- Navigation -->
         <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -52,7 +80,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="index.html">研究生论文盲审系统</a>
+                <a class="navbar-brand" href="index.php">研究生论文盲审系统</a>
             </div>
             <!-- /.navbar-header -->
 
@@ -63,22 +91,22 @@
                     <ul class="nav" id="side-menu">
                         
                         <li>
-                            <a href="index.html"><i class="fa fa-dashboard fa-fw"></i> 概要</a>
+                            <a href="index.php"><i class="fa fa-dashboard fa-fw"></i> 概要</a>
                         </li>
                         <li>
                             <a href="#"><i class="fa fa-users fa-fw"></i> 用户管理<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
-                                    <a href="user_list.html"> 用户列表</a>
+                                    <a href="user_list.php"> 用户列表</a>
                                 </li>
                                 <li>
-                                    <a href="add_user.html"> 添加用户</a>
+                                    <a href="add_user.php"> 添加用户</a>
                                 </li>
                             </ul>
                             <!-- /.nav-second-level -->
                         </li>
                         <li>
-                            <a href="profile.html"><i class="fa fa-user fa-fw"></i> 个人资料</a>
+                            <a href="profile.php"><i class="fa fa-user fa-fw"></i> 个人资料</a>
                         </li>
                         <li>
                             <a href="javascript:winconfirm()"><i class="fa fa-sign-out fa-fw"></i> 登出系统</a>
@@ -106,20 +134,20 @@
                             <div class="pull-right">
                                 <div class="btn-group">
                                     <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
-                                        所有用户
+                                        <?php echo $userType; ?>
                                         <span class="caret"></span>
                                     </button>
                                     <ul class="dropdown-menu pull-right" role="menu">
-                                        <li><a href="#">所有用户</a>
+                                        <li><a href="user_list.php?userType=全部">所有用户</a>
                                         </li>
                                         <li class="divider"></li>
-                                        <li><a href="#">管理员</a>
+                                        <li><a href="user_list.php?userType=系统管理员">管理员</a>
                                         </li>
-                                        <li><a href="#">导师</a>
+                                        <li><a href="user_list.php?userType=导师">导师</a>
                                         </li>
-                                        <li><a href="#">学生</a>
+                                        <li><a href="user_list.php?userType=学生">学生</a>
                                         </li>
-                                        <li><a href="#">学院管理人员</a>
+                                        <li><a href="user_list.php?userType=系统管理员">学院管理人员</a>
                                         </li>
                                     </ul>
                                 </div>
@@ -132,7 +160,7 @@
                                 <table class="table table-striped table-bordered table-hover" id="dataTables-example">
                                     <thead>
                                         <tr>
-                                            <th>用户 ID</th>
+                                            <!-- <th>用户 ID</th> -->
                                             <th>用户名</th>
                                             <th>姓名</th>
                                             <th>用户角色</th>
@@ -141,38 +169,22 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr class="odd gradeX">
-                                            <td>1</td>
-                                            <td>admin</td>
-                                            <td>初始管理员</td>
-                                            <td class="center">管理员</td>
-                                            <td class="center"><a href="#">查看详情</a></td>
-                                            <td><input type="checkbox"></td>
-                                        </tr>
-                                        <tr class="even gradeC">
-                                            <td>2</td>
-                                            <td>ihainan</td>
-                                            <td>符积高</td>
-                                            <td class="center">研究生</td>
-                                            <td class="center"><a href="#">查看详情</a></td>
-                                            <td><input type="checkbox"></td>
-                                        </tr>
-                                        <tr class="odd gradeA">
-                                            <td>3</td>
-                                            <td>ck</td>
-                                            <td>陈凯</td>
-                                            <td class="center">研究生</td>
-                                            <td class="center"><a href="#">查看详情</a></td>
-                                            <td><input type="checkbox"></td>
-                                        </tr>
-                                        <tr class="even gradeA">
-                                            <td>4</td>
-                                            <td>mary</td>
-                                            <td>马锐</td>
-                                            <td class="center">导师</td>
-                                            <td class="center"><a href="#">查看详情</a></td>
-                                            <td><input type="checkbox"></td>
-                                        </tr>
+                                        <?php
+                                            foreach ($usersInfo as $userInfo) {
+                                                if($userType == "全部" || $userType == $userInfo["用户角色"]){
+                                                ?>
+                                                <tr class="odd gradeX">
+                                                    <td><?php echo $userInfo["用户id"]; ?></td>
+                                                    <td><?php echo $userInfo["姓名"]; ?></td>
+                                                    <td class="center"><?php echo $userInfo["用户角色"]; ?></td>
+                                                    <td class="center"><a href="./user_info.php?id=<?php echo $userInfo["用户id"]; ?>">查看详情</a></td>
+                                                    <td><input type="checkbox"></td>
+                                                </tr>
+                                                <?php
+                                                }
+                                            }
+                                        ?>
+                                        
                                     </tbody>
                                 </table>
                             </div>
