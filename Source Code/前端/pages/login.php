@@ -1,16 +1,46 @@
 <?php
+   /* include "../phpLibrary/notorm-master/NotORM.php";
+    $pdo = new PDO('mysql:host=localhost;dbname=blind_review_db','root','');
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $pdo->exec('set names utf8');
+    $db = new NotORM($pdo);*/
+    include "../mysql.php";
     function clearCookies(){
         setcookie('username',"",time()-3600);
         setcookie("role","",time()-3600);
     }
     if($_GET["action"] == "login"){
         clearCookies();
-        if($_POST["username"] == "admin" && $_POST["password"] == "123456"){
-            setcookie('username',$_POST["username"],time()+60*60*24*7);
-            setcookie('role','系统管理员',time()+60*60*24*7);
-            header('Location:admin/index.html');
+        $user = $db->系统用户->where("用户id",$_POST["username"])->fetch();
+        //echo $user->fetch();
+        //echo $user->count("*");
+       // echo $user["用户id"]." ".$user["密码"]." ".$user["用户角色"];
+        if($user->count("*") == 3){//用户名正确
+        
+            //$i = strcmp($user["密码"],md5($_POST["password"]));
+            if(strcmp($user["密码"],md5($_POST["password"])) == 0){//密码正确
+                if(0 == strcmp($user["用户角色"],"系统管理员")){
+                    setcookie('username',$_POST["username"],time()+60*60*24*7);
+                    setcookie('role','系统管理员',time()+60*60*24*7);
+                    header('Location:admin/index.html');
+                }else if(strcmp($user["用户角色"],"学生") == 0){
+                    setcookie('username',$_POST["username"],time()+60*60*24*7);
+                    setcookie('role','学生',time()+60*60*24*7);
+                    header('Location:student/index.html');
+                }else if(0 == strcmp($user["用户角色"],"导师")){
+                    setcookie('username',$_POST["username"],time()+60*60*24*7);
+                    setcookie('role','导师',time()+60*60*24*7);
+                    header('Location:teacher/index.html');
+                }else if(0 == strcmp($user["用户角色"],"学院管理人员")){
+                    setcookie('username',$_POST["username"],time()+60*60*24*7);
+                    setcookie('role','学院管理人员',time()+60*60*24*7);
+                    header('Location:manager/index.html');
+                }
+            }else {
+                die("用户名或密码错误!".$_POST["password"]." ".md5($_POST["password"]." ".$user["密码"]));
+            }
         }else{
-            die("用户名或密码错误!");
+            die("用户名或密码错误!".$user->count("*"));
         }
     }
 
