@@ -1,4 +1,20 @@
-<!DOCTYPE html>
+<?php
+    function clearCookies(){
+        setcookie('username',"",time()-3600);
+        setcookie("role","",time()-3600);
+    }
+    if($_GET["action"] == "login"){
+        clearCookies();
+        if($_POST["username"] == "admin" && $_POST["password"] == "123456"){
+            setcookie('username',$_POST["username"],time()+60*60*24*7);
+            setcookie('role','系统管理员',time()+60*60*24*7);
+            header('Location:admin/index.html');
+        }else{
+            die("用户名或密码错误!");
+        }
+    }
+
+?>
 <html lang="en">
 
 <head>
@@ -45,7 +61,7 @@
                         </div>
                     </div>
                     <div class="panel-body">
-                        <form role="form">
+                        <form role="form" action="login.php?action=login" method="post">
                             <fieldset>
                                 <div class="form-group">
                                     <input class="form-control" placeholder="用户名" name="username" type="username" autofocus>
@@ -59,7 +75,7 @@
                                     </label>
                                 </div>
                                 <!-- Change this to a button or input when using this as a form -->
-                                <a href="index.html" class="btn btn-lg btn-success btn-block">登录</a>
+                                <input type="submit" class="btn btn-lg btn-success btn-block"  placeholder="登录">
                             </fieldset>
                         </form>
                     </div>

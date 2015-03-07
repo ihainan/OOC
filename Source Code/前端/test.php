@@ -1,6 +1,6 @@
 <?php
 include "phpLibrary/notorm-master/NotORM.php";
-$pdo = new PDO('mysql:host=localhost;dbname=blind_review_db','root','');
+$pdo = new PDO('mysql:host=10.4.20.193;dbname=blind_review_db','ss','123456');
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 $pdo->exec('set names utf8');
 $db = new NotORM($pdo);
