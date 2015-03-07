@@ -4,11 +4,9 @@
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     $pdo->exec('set names utf8');
     $db = new NotORM($pdo);*/
-    include "../mysql.php";
-    function clearCookies(){
-        setcookie('username',"",time()-3600);
-        setcookie("role","",time()-3600);
-    }
+    include "../phpLibrary/mysql.php";
+    include "../phpLibrary/cookie.php";
+   
     if($_GET["action"] == "login"){
         clearCookies();
         $user = $db->系统用户->where("用户id",$_POST["username"])->fetch();
@@ -43,7 +41,16 @@
             die("用户名或密码错误!".$user->count("*"));
         }
     }
-
+    //根据cookie自动登录
+    if(!strcmp($_COOKIE["role"],"系统管理员")){
+        header('Location:admin/index.html');
+    }else if(!strcmp($_COOKIE["role"],"学生")){
+        header('Location:student/index.html');
+    }else if(!strcmp($_COOKIE["role"],"导师")){
+        header('Location:teacher/index.html');
+    }else if(!strcmp($_COOKIE["role"],"学院管理人员")){
+        header('Location:manager/index.html');
+    }
 ?>
 <html lang="en">
 
