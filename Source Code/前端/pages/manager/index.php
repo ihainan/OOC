@@ -275,25 +275,19 @@
                         <div class="panel-heading">
                             <i class="fa fa-bell fa-fw"></i> 消息提醒
                         </div>
-
-
-
-                        
                         <!-- /.panel-heading -->
-                       
                         <div class="panel-body">
                             <div class="list-group">
-                                <?php
-                                    foreach ($userMessages as $userMessage) {
-                                ?>
-                                    <a href="#" class="list-group-item">
-                                        <i class="fa fa-comment fa-fw"></i> <?php echo $userMessage["消息标题"];?>
-                                        <span class="pull-right text-muted small"><em><?php echo $userMessage["time"];?></em>
-                                        </span>
-                                    </a>
-                                <?php
-                                    }
-                                ?>
+                                <a href="#" class="list-group-item">
+                                    <i class="fa fa-comment fa-fw"></i> 您的学生符积高提交了评…
+                                    <span class="pull-right text-muted small"><em>1 小时前</em>
+                                    </span>
+                                </a>
+                                <a href="#" class="list-group-item">
+                                    <i class="fa fa-comment fa-fw"></i> 您的学生陈凯提交了评审…
+                                    <span class="pull-right text-muted small"><em>1 小时前</em>
+                                    </span>
+                                </a>
                             </div>
                             <!-- /.list-group -->
                             <a href="#" class="btn btn-default btn-block">查看所有消息</a>
