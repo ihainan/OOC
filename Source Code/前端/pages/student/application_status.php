@@ -1,4 +1,34 @@
-<!DOCTYPE html>
+<?php
+    if(strcmp($_COOKIE["role"],"学生")){
+       header("refresh:3;url=../login.php");
+       echo "无权限浏览此页，3秒后跳转...";
+       exit();
+      }
+
+    // 引用文件
+    require_once("../../phpLibrary/users.php");
+    require_once("../../phpLibrary/notorm-master/NotORM.php");
+
+    // 初始化数据库
+    $pdo = new PDO('mysql:host=lab.ihainan.me;dbname=blind_review_db','ss','123456');
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $pdo->exec('set names utf8');
+    $db = new NotORM($pdo);
+    // 初始化 Users 类
+    $users = new Users($db);
+
+    $studentInfo = $users->getStudentInfo($_COOKIE["username"]);
+    //print_r($studentInfo);
+    $application = $db->评审申请();
+     //获取该学生提交的评审申请
+    $stu_apply = $application->where("学生id",$_COOKIE["username"])->order("id DESC")->limit(1,0);
+    //echo $stu_apply;
+    $last_apply = $stu_apply->fetch();
+    //$flag;
+    if($last_apply["开放审核申请id"] == $db->开放审核申请()->max("id")){
+       $flag = $last_apply["审核状态"];
+    }
+?>
 <html lang="en">
 
 <head>
@@ -110,7 +140,7 @@
                 <div class="col-lg-12">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                           当前状态：<b><font color="#6495ED">通过申请</font></b>
+                           当前状态：<b><font color="#6495ED"><?php if(!empty(flag)){echo $flag;}else echo "未申请";?></font></b>
                         </div>
                         <div class="panel-body">
                             <div class="row">
@@ -118,19 +148,40 @@
                                     <form role="form">
                                         <div class="form-group">
                                             <label>论文题目：</label>
-                                            <input class="form-control" value="《一个非常屌的论文题目》">
+                                            <input class="form-control" value="
+                                            <?php 
+                                                if(!empty($flag)){
+                                                echo $last_apply["论文题目"];
+                                                }
+                                            ?>" 
+                                            disabled>
                                         </div>
                                         <div class="form-group">
                                             <label>论文摘要：</label>
-                                            <textarea class="form-control" rows="5" disabled>一个非常屌的论文摘要</textarea> 
+                                            <textarea class="form-control" rows="5" disabled>
+                                            <?php 
+                                                if(!empty($flag)){
+                                                echo $last_apply["论文摘要"];
+                                                }
+                                            ?></textarea> 
                                         </div>
                                         <div class="form-group">
                                             <label>导师意见：</label>
-                                            <textarea class="form-control" rows="5" disabled>写得非常好！</textarea>
+                                            <textarea class="form-control" rows="5" disabled>
+                                             <?php 
+                                                if(!empty($flag)){
+                                                echo $last_apply["导师意见"];
+                                                }
+                                            ?></textarea>
                                         </div>
                                         <div class="form-group">
                                             <label>学院意见：</label>
-                                            <textarea class="form-control" rows="5" disabled>好啦，给你过。</textarea>
+                                            <textarea class="form-control" rows="5" disabled>
+                                            <?php 
+                                                if(!empty($flag)){
+                                                echo $last_apply["学院意见"];
+                                                }
+                                            ?></textarea>
                                         </div>
                                     </form>
                                 </div>
@@ -162,7 +213,14 @@
 
     <!-- Custom Theme JavaScript -->
     <script src="../../dist/js/sb-admin-2.js"></script>
-
+    <script>
+        function winconfirm(){
+            question = confirm("确定登出本系统？")
+            if (question != "0"){
+             window.location = "../logout.php"
+            }
+        }
+    </script>
 </body>
 
 </html>

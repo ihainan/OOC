@@ -51,7 +51,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="index.html">研究生论文盲审系统</a>
+                <a class="navbar-brand" href="index.php">研究生论文盲审系统</a>
             </div>
             <!-- /.navbar-header -->
 
@@ -62,16 +62,16 @@
                     <ul class="nav" id="side-menu">
                         
                         <li>
-                            <a href="index.html"><i class="fa fa-dashboard fa-fw"></i> 概要</a>
+                            <a href="index.php"><i class="fa fa-dashboard fa-fw"></i> 概要</a>
                         </li>
                         <li>
-                            <a href="students.html"><i class="fa fa-users fa-fw"></i> 学生列表</a>
+                            <a href="students.php"><i class="fa fa-users fa-fw"></i> 学生列表</a>
                         </li>
                         <li>
-                            <a href="papers.html"><i class="fa fa-pencil-square-o fa-fw"></i> 审核论文</a>
+                            <a href="papers.php"><i class="fa fa-pencil-square-o fa-fw"></i> 审核论文</a>
                         </li>
                         <li>
-                            <a href="profile.html"><i class="fa fa-user fa-fw"></i> 个人资料</a>
+                            <a href="profile.php"><i class="fa fa-user fa-fw"></i> 个人资料</a>
                         </li>
                         <li>
                             <a href="javascript:winconfirm()"><i class="fa fa-sign-out fa-fw"></i> 登出系统</a>
@@ -116,13 +116,13 @@
                                         <tr class="even gradeC">
                                             <td>符积高</td>
                                             <td class="center">2220140550</td>
-                                            <td class="center">待填写导师意见（<a href="application_status.html">查看详情</a>）</td>
+                                            <td class="center">待填写导师意见（<a href="application_status.php">查看详情</a>）</td>
                                             <td>暂未更新</td>
                                         </tr>
                                         <tr class="odd gradeA">
                                             <td>陈凯</td>
                                             <td class="center">2220140551</td>
-                                            <td class="center">已审核（<a href="application_status.html">查看详情</a>）</td>
+                                            <td class="center">已审核（<a href="application_status.php">查看详情</a>）</td>
                                             <td>论文已上传（<a href="#">查看详情</a>）</td>
                                         </tr>
                                     </tbody>
