@@ -14,15 +14,15 @@
 
 
 		public function getApplicationInfo($userId){
-			$apps = $this -> db -> 评审申请() -> where('学生id', $userId);
+			$apps = $this -> db -> 评审申请() -> where("学生id",$userId)->order("id DESC")->limit(1,0);
+
 			if(sizeof($apps) == 0){
 
 				return null;
 			}
 			else{
 				$app = $apps[0];
-				echo "here<br>";
-				print_r($apps[2]);
+
 				$arr = array(
 						"论文题目" => $app['论文题目'],
 						"论文摘要" => $app['论文摘要'],
