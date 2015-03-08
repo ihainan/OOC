@@ -21,8 +21,7 @@
             $message = array(
                 "消息标题" => "开放申请通知",
                 "消息内容" => "论文审核申请已经开始，请同学们在".$bday."前完成申请。",
-                "消息接受用户id" => "*",
-                "time",time());
+                "消息接受用户id" => "*");
             $msg_result = $sent_message->insert($message);
             echo $msg_result["id"];
         }
@@ -32,8 +31,7 @@
     //echo $maxid;
     $last_open_time = $db->开放审核申请()->where("id",$maxid)->fetch()["截止日期"];
     //echo $last_open_time;
-
-    echo date("y-m-d",time());
+    //echo time()."<br>";
 ?>
 <html lang="en">
 
@@ -191,6 +189,14 @@
 
     <!-- Custom Theme JavaScript -->
     <script src="../../dist/js/sb-admin-2.js"></script>
+    <script>
+        function winconfirm(){
+            question = confirm("确定登出本系统？")
+            if (question != "0"){
+             window.location = "../logout.php"
+            }
+        }
+    </script>
 </body>
 
 </html>

@@ -168,7 +168,14 @@
 
     <!-- Custom Theme JavaScript -->
     <script src="../../dist/js/sb-admin-2.js"></script>
-
+    <script>
+        function winconfirm(){
+            question = confirm("确定登出本系统？")
+            if (question != "0"){
+             window.location = "../logout.php"
+            }
+        }
+    </script>
 </body>
 
 </html>

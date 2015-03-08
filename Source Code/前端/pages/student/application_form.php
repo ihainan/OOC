@@ -22,16 +22,29 @@
     $users = new Users($db);
 
     $studentInfo = $users->getStudentInfo($_COOKIE["username"]);
-    print_r($studentInfo);
-
+    //print_r($studentInfo);
+    $application = $db->评审申请();
+    
     if($_GET["action"] == "application"){//判断用户是否执行提交操作
         if(!empty($_POST)){
-
+            //print_r($_POST);
+            $data = array(
+            "学生id" => $studentInfo["用户id"],
+            "审核状态" => "待导师意见",
+            "开放审核申请id" => $db->开放审核申请()->max("id"),
+            "论文摘要" => $_POST["abstract"],
+            "论文题目" => $_POST["paper_tile"],
+            "申请理由" => $_POST["reason"]);
+            $result = $application->insert($data);
         }
     }
-    //提交申请函数
-    function sendApplication(){
-
+    //获取该学生提交的评审申请
+    $stu_apply = $application->where("学生id",$_COOKIE["username"])->order("id DESC")->limit(1,0);
+    //echo $stu_apply;
+    $last_apply = $stu_apply->fetch();
+    //$flag;
+    if($last_apply["开放审核申请id"] == $db->开放审核申请()->max("id")){
+       $flag = "状态：".$last_apply["审核状态"];
     }
 ?>
 <html lang="en">
@@ -136,7 +149,8 @@
         <div id="page-wrapper">
             <div class="row">
                 <div class="col-lg-12">
-                    <h1 class="page-header">填写申请</h1>
+                    <h1 class="page-header">填写申请 <?php if(!empty($flag)){ echo "　".$flag;}?>
+                    </h1>
                 </div>
                 <!-- /.col-lg-12 -->
             </div>
@@ -157,38 +171,40 @@
                                         </div>
                                         <div class="form-group">
                                             <label>姓名：</label>
-                                            <input class="form-control" value="<?php echo $studentInfo["姓名"]?>" disabled>
+                                            <input name="username" class="form-control" value="<?php echo $studentInfo["姓名"]?>" disabled>
                                         </div>
                                         <div class="form-group">
                                             <label>指导老师：</label>
-                                            <input class="form-control" value="<?php echo $studentInfo["导师"]?>" disabled>
+                                            <input name="teacher" class="form-control" value="<?php echo $studentInfo["导师"]?>" disabled>
                                         </div>
                                         <div class="form-group">
                                             <label>入学时间：</label>
-                                            <input class="form-control" value="<?php echo $studentInfo["入学时间"]?>" disabled>
+                                            <input name="admission_time" class="form-control" value="<?php echo $studentInfo["入学时间"]?>" disabled>
                                         </div>
                                         <div class="form-group">
                                             <label>手机：</label>
-                                            <input class="form-control" value="<?php echo $studentInfo["电话"]?>" >
+                                            <input name="phone" class="form-control" value="<?php echo $studentInfo["电话"]?>" disabled>
                                         </div>
                                         <div class="form-group">
                                             <label>邮箱：</label>
-                                            <input class="form-control" value="<?php echo $studentInfo["Email"]?>">
+                                            <input name="email" class="form-control" value="<?php echo $studentInfo["Email"]?>" disabled>
                                         </div>
                                         <div class="form-group">
                                             <label>论文题目：</label>
-                                            <input class="form-control" value="《一个非常屌的论文题目》">
+                                            <input name="paper_tile" class="form-control" value="《一个非常屌的论文题目》" <?php if(!empty($flag)){ echo "disabled";}?>>
                                         </div>
                                         <div class="form-group">
                                             <label>论文摘要：</label>
-                                            <textarea class="form-control" rows="5" >一个非常屌的论文摘要</textarea> 
+                                            <textarea name="abstract" class="form-control" rows="5" <?php if(!empty($flag)){ echo "disabled";}?>
+                                            >一个非常屌的论文摘要</textarea> 
                                         </div>
                                         <div class="form-group">
                                             <label>申请理由：</label>
-                                            <textarea class="form-control" rows="5" >我已获得软件工程硕士培养计划中规定的全部学分,并完成了学位论文的 撰写工作。现申请进行学位论文评审,请审批。</textarea>
+                                            <textarea name="reason" class="form-control" rows="5" <?php if(!empty($flag)){ echo "disabled";}?>
+                                            >我已获得软件工程硕士培养计划中规定的全部学分,并完成了学位论文的 撰写工作。现申请进行学位论文评审,请审批。</textarea>
                                         </div>
-                                        <button type="submit" class="btn btn-default" >提交</button>
-                                        <button type="reset" class="btn btn-default" >重置</button>
+                                        <button type="submit" class="btn btn-default" <?php if(!empty($flag)){ echo "disabled";}?>>提交</button>
+                                        <button type="reset" class="btn btn-default" <?php if(!empty($flag)){ echo "disabled";}?>>重置</button>
                                     </form>
                                 </div>
                                
@@ -219,7 +235,7 @@
 
     <!-- Custom Theme JavaScript -->
     <script src="../../dist/js/sb-admin-2.js"></script>
-<script>
+    <script>
         function winconfirm(){
             question = confirm("确定登出本系统？")
             if (question != "0"){
