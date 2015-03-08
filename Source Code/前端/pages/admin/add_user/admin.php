@@ -31,7 +31,7 @@
         $result = $users -> addAdminUser(array(    
             "用户id" => $_POST["用户id"],
             "用户角色" => "系统管理员", 
-            "密码" => $_POST["密码"],
+            "密码" => md5($_POST["密码"]),
             "姓名" => $_POST["姓名"]));
 
 

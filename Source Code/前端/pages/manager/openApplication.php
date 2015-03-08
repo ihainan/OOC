@@ -81,7 +81,7 @@
 
     <div id="wrapper">
 
-       <!-- Navigation -->
+        <!-- Navigation -->
         <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -104,16 +104,10 @@
                             <a href="index.php"><i class="fa fa-dashboard fa-fw"></i> 概要</a>
                         </li>
                         <li>
-                            <a href="#"><i class="fa fa-users fa-fw"></i> 用户管理<span class="fa arrow"></span></a>
-                            <ul class="nav nav-second-level">
-                                <li>
-                                    <a href="user_list.php"> 用户列表</a>
-                                </li>
-                                <li>
-                                    <a href="add_user.php"> 添加用户</a>
-                                </li>
-                            </ul>
-                            <!-- /.nav-second-level -->
+                            <a href="openApplication.php"><i class="fa fa-pencil fa-fw"></i> 开放申请</a>
+                        </li>
+                        <li>
+                            <a href="students.php"><i class="fa fa-users fa-fw"></i> 学生列表</a>
                         </li>
                         <li>
                             <a href="profile.php"><i class="fa fa-user fa-fw"></i> 个人资料</a>

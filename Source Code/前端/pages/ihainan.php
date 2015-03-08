@@ -7,6 +7,7 @@
 	require_once("../phpLibrary/notorm-master/NotORM.php");
 	require_once("../phpLibrary/users.php");
 	require_once("../phpLibrary/message_class.php");
+	require_once("../phpLibrary/Application.php");
 
 	// 初始化数据库
     $pdo = new PDO('mysql:host=lab.ihainan.me;dbname=blind_review_db','ss','123456');
@@ -28,6 +29,12 @@
 	$usersInfo = $users -> getUsersInfo();
 	// print_r($usersInfo);
 
+	/*
 	$message = new Message($db);
 	$message -> getUserMessage("2220140550");
+	*/
+
+	$application = new Application($db);
+	$arr = $application -> getApplicationInfo("2220140537");
+	print_r($arr);
 ?>
