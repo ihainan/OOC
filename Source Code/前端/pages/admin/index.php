@@ -12,6 +12,7 @@
 
     // 引用文件
     require_once("../../phpLibrary/users.php");
+    require_once("../../phpLibrary/message_class.php");
     require_once("../../phpLibrary/notorm-master/NotORM.php");
 
     // 初始化数据库
@@ -34,6 +35,12 @@
         $oldArray = array();
     }
     krsort($oldArray);
+
+    // 初始化 Message 类
+    $message = new Message($db);
+
+    // 获取用户收到的消息
+    $userMessages = $message -> getUserMessage("2220140550");
 ?>
 <html lang="en">
 
@@ -280,22 +287,26 @@
                         <div class="panel-heading">
                             <i class="fa fa-bell fa-fw"></i> 消息提醒
                         </div>
+
+
+
+                        
                         <!-- /.panel-heading -->
-                        <!--
+                       
                         <div class="panel-body">
                             <div class="list-group">
-                                <a href="#" class="list-group-item">
-                                    <i class="fa fa-comment fa-fw"></i> 您的论文盲审申请已经通…
-                                    <span class="pull-right text-muted small"><em>4 分钟前</em>
-                                    </span>
-                                </a>
-                                <a href="#" class="list-group-item">
-                                    <i class="fa fa-comment fa-fw"></i> 您的导师已经填写导师意…
-                                    <span class="pull-right text-muted small"><em>4 分钟前</em>
-                                    </span>
-                                </a>
+                                <?php
+                                    foreach ($userMessages as $userMessage) {
+                                ?>
+                                    <a href="#" class="list-group-item">
+                                        <i class="fa fa-comment fa-fw"></i> <?php echo $userMessage["消息标题"];?>
+                                        <span class="pull-right text-muted small"><em>4 分钟前</em>
+                                        </span>
+                                    </a>
+                                <?php
+                                    }
+                                ?>
                             </div>
-                            -->
                             <!-- /.list-group -->
                             <a href="#" class="btn btn-default btn-block">查看所有消息</a>
                         </div>
