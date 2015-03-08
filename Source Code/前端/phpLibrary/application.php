@@ -29,6 +29,45 @@
 				return $arr;
 			}
 		}
+
+		/** 
+		//	函数: getApplicationStatus($userid)
+		//	功能：用户申请表的状态
+		//	返回：学生是否已提交 / 导师是否已提交 / 学院是否已审核 / 审核是否通过
+		**/
+		public function getApplicationStatus($userid){
+			$isStudentSubmitted = false;
+			$isTeacherSubmitted = false;
+			$isSchoolSubmitted = false;
+			$isAccedpted = false;
+
+			// 获取申请表
+			$applicationForms = $this -> db -> 评审申请() -> where("学生id", $userid);
+			// 检查学生是否已经提交
+			if(sizeof($applicationForms) > 0){
+				$isStudentSubmitted = true;
+
+				// 检查导师是否已经提交
+				$applicationForm = $applicationForms[1];
+
+				if(isset($applicationForm["导师意见"])){
+					$isTeacherSubmitted = true;
+					if(isset($applicationForm["学院意见"])){
+						$isSchoolSubmitted = true;
+						if(isset($applicationForm["审核状态"]) && $applicationForm["审核状态"] == "通过"){
+							$isAccedpted = true;
+						}
+					}
+				}
+			}
+
+			return array(
+				"isSchoolSubmitted" => $isSchoolSubmitted,
+				"isStudentSubmitted" => $isStudentSubmitted,
+				"isTeacherSubmitted" => $isTeacherSubmitted,
+				"isAccedpted" => $isAccedpted,
+				);
+		}
 	}
 
 ?>
