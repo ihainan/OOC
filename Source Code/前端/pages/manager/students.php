@@ -1,3 +1,47 @@
+<?php
+    // print_r($_COOKIE);
+    if(strcmp($_COOKIE["role"],"学院管理人员")){
+       header("refresh:3;url=../login.php");
+       echo "无权限浏览此页，3秒后跳转...";
+       exit();
+      }
+
+    // 开启错误提示
+    error_reporting(E_ALL);
+    ini_set('display_errors', 'On');
+
+    // 引用文件
+    require_once("../../phpLibrary/users.php");
+    require_once("../../phpLibrary/review_class.php");
+    require_once("../../phpLibrary/message_class.php");
+    require_once("../../phpLibrary/application.php");
+    require_once("../../phpLibrary/notorm-master/NotORM.php");
+
+    // 初始化数据库
+    $pdo = new PDO('mysql:host=lab.ihainan.me;dbname=blind_review_db','ss','123456');
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $pdo->exec('set names utf8');
+    $db = new NotORM($pdo);
+
+  
+    // 初始化函数库类
+    $review = new Review($db);
+    $users = new Users($db);
+    $application = new Application($db);
+
+    // 获取所有用户
+    $usersInfo = $users -> getUsersInfo();    
+
+    // 更新学术不端检测结果
+    if(array_key_exists("学术不端检测结果", $_GET)
+        && array_key_exists("userId", $_GET)){
+        if($_GET["学术不端检测结果"] != "未设置"){
+            $review -> updatePaperReview($_GET["userId"], $_GET["学术不端检测结果"]);
+            $message = "保存成功！";
+            echo "<script type='text/javascript'>alert('$message');</script>";
+        }
+    }
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -95,11 +139,6 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="panel panel-default">
-                        <div class="panel-heading">
-                            所有学生
-
-                        </div>
-
                         <!-- /.panel-heading -->
                         <div class="panel-body">
                             <div class="dataTable_wrapper">
@@ -111,47 +150,75 @@
                                             <th>申请表状态</th>
                                             <th>论文提交状态</th>
                                             <th>学术不端检测结果</th>
+                                            <th>专家一</th>
                                             <th>专家一意见</th>
+                                            <th>专家二</th>
                                             <th>专家二意见</th>
                                             <th>最终结果</th>
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        <?php
+                                            foreach ($usersInfo as $userInfo) {
+                                                if($userInfo["用户角色"] == "学生"){
+                                                    $userId = $userInfo["用户id"];
 
-                                        <tr class="even gradeC">
-                                            <td>符积高</td>
-                                            <td class="center">2220140550</td>
-                                            <td class="center">导师已提交（<a href="application_status.php">查看详情</a>）</td>
-                                            <td class="center">已上传（<a href="application_status.php">下载</a>）</td>
-                                            <td>
-                                                <select class="form-contrl">
-                                                    <option>未设置</option>
-                                                    <option >高于 25%,评审不通过</option>
-                                                    <option>低于 25%,论文主体部分重合率高</option>
-                                                    <option>低于 25%,绪论及文献综述部分重合率高</option>
-                                                </select>
-                                            </td>
-                                            <td>已填写（<a href="application_status.php">修改</a>）</td>
-                                            <td>未填写（<a href="application_status.php">填写</a>）</td>
-                                            <td>待定</td>
-                                        </tr>
+                                                    // 获取论文审核状态
+                                                    $applicationStautsText = $application -> getApplicationStatusText($userId);
+
+                                                    // 获取论文上传状态
+                                                    $isPaperUploaded = $review -> isPaperUploaded($userId);
+                                                    if($isPaperUploaded){
+                                                        $isPaperUploadedText = "已上传";
+                                                        $link = "../uploads/".$userId."_".date("Y").".docx";
+                                                    }
+                                                    else{
+                                                        $isPaperUploadedText = "未上传";
+                                                    }
+
+                                                    // 获取审核信息表
+                                                    $reviewResult = $review -> getReviewResult($userId);
+                                                    $paperCheckStatus = $reviewResult["学术不端检测结果"];
+                                        ?>
+                                           
                                             <tr class="even gradeC">
-                                            <td>陈凯</td>
-                                            <td class="center">2220140551</td>
-                                            <td class="center">导师已提交（<a href="application_status.php">查看详情</a>）</td>
-                                            <td class="center">已上传（<a href="application_status.php">下载</a>）</td>
-                                            <td>
-                                                <select class="form-contrl">
-                                                    <option>未设置</option>
-                                                    <option >高于 25%,评审不通过</option>
-                                                    <option>低于 25%,论文主体部分重合率高</option>
-                                                    <option>低于 25%,绪论及文献综述部分重合率高</option>
-                                                </select>
-                                            </td>
-                                            <td>未填写（<a href="application_status.php">填写</a>）</td>
-                                            <td>未填写（<a href="application_status.php">填写</a>）</td>
-                                            <td>待定</td>
-                                        </tr>
+                                                <td><?php echo $userInfo["姓名"]; ?></td>
+                                                <td class="center"><?php echo $userInfo["用户id"]; ?> </td>
+                                                <td class="center"><?php echo $applicationStautsText; ?>（<a href="application_status.php?userid=<?php echo $userId; ?>">查看详情</a>）</td>
+                                                <td class="center"><?php echo $isPaperUploadedText; ?>
+                                                    <?php
+                                                        if($isPaperUploaded){
+                                                    ?>
+                                                        （<a href="<?php echo $link; ?>">下载</a>）
+                                                    <?php
+                                                        }
+                                                    ?>
+                                                    </td>
+                                                <td>
+                                                     <form action="students.php" method="get">
+                                                     <input type="hidden" name = "userId" value = "<?php echo $userId;?>" length = "0"/>
+                                                    <select class="form-contrl" name = "学术不端检测结果">
+                                                        
+                                                        <option <?php if($paperCheckStatus == "") echo "selected";?>>未设置</option>
+                                                        <option <?php if($paperCheckStatus == "高于 25%,评审不通过") echo "selected";?>>高于 25%,评审不通过</option>
+                                                        <option <?php if($paperCheckStatus == "低于 25%,论文主体部分重合率高") echo "selected";?>>低于 25%,论文主体部分重合率高</option>
+                                                        <option <?php if($paperCheckStatus == "低于 25%,绪论及文献综述部分重合率高") echo "selected";?>>低于 25%,绪论及文献综述部分重合率高</option>
+                                                    </select>
+                                                     <input type="submit" value="保存"/>
+                                                    </form>
+                                                </td>
+                                                <td><?php echo $reviewResult["评审专家一id"];?></td>
+                                                <td><?php echo $reviewResult["评审专家一意见"];?>（<a href="expertReview.php?userId=<?php echo $userId?>&expert=1">修改</a>）</td>
+                                                <td><?php echo $reviewResult["评审专家二id"];?></td>
+                                                <td><?php echo $reviewResult["评审专家二意见"];?>（<a href="expertReview.php?userId=<?php echo $userId?>&expert=2">填写</a>）</td>
+                                                <td><?php echo $reviewResult["学院意见"];?></td>
+                                            </tr>
+                            
+                                        <?php            
+
+                                                }
+                                            }
+                                        ?>
                                     </tbody>
                                 </table>
                             </div>
