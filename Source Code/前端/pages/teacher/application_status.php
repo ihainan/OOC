@@ -1,3 +1,49 @@
+<?php
+    // print_r($_COOKIE);
+    if(strcmp($_COOKIE["role"],"导师")){
+       header("refresh:3;url=../login.php");
+       echo "无权限浏览此页，3秒后跳转...";
+       exit();
+      }
+      // 开启错误提示
+    //error_reporting(E_ALL);
+    //ini_set('display_errors', 'On');
+
+    // 引用文件
+    require_once("../../phpLibrary/users.php");
+    require_once("../../phpLibrary/notorm-master/NotORM.php");
+
+    // 初始化数据库
+    $pdo = new PDO('mysql:host=lab.ihainan.me;dbname=blind_review_db','ss','123456');
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $pdo->exec('set names utf8');
+    $db = new NotORM($pdo);
+    // 初始化 Users 类
+    $users = new Users($db);
+
+    //echo $_GET['userId'];
+
+    $studentInfo = $users->getStudentInfo($_COOKIE["username"]);
+    //print_r($studentInfo);
+    $application = $db->评审申请();
+    $userId = $_GET["userId"];
+    //echo $userId;
+    if($_GET["action"] == "review"){//判断用户是否执行提交操作
+        if(!empty($_POST)){
+            //print_r($_POST);
+            $data = array(
+            "导师意见" => $_POST["teacherReview"]);
+            echo $application->where("学生id",$_GET["userId"])->update($data);
+            $result = $application->where("学生id",$_GET["userId"])->update($data);
+        }
+    }
+    //获取该学生提交的评审申请
+    $stu_apply = $application->where("学生id",$_GET["userId"])->order("id DESC")->limit(1,0);
+    //echo $stu_apply;
+    $last_apply = $stu_apply->fetch();
+    
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -94,22 +140,24 @@
                         <div class="panel-body">
                             <div class="row">
                                 <div class="col-lg-6">
-                                    <form role="form">
+                                    <form role="form" action="application_status.php?action=review&userId=<?php echo $userId; ?>" method="post">
                                         <div class="form-group">
                                             <label>论文题目：</label>
-                                            <input class="form-control" value="《一个非常屌的论文题目》" disabled>
+                                            <input class="form-control" value="<?php echo $last_apply['论文题目']?>" disabled>
                                         </div>
                                         <div class="form-group">
                                             <label>论文摘要：</label>
-                                            <textarea class="form-control" rows="5" disabled>一个非常屌的论文摘要</textarea> 
+                                            <textarea class="form-control" rows="5" disabled>
+                                                <?php echo $last_apply['论文摘要']?>
+                                            </textarea> 
                                         </div>
                                         <div class="form-group">
                                             <label>导师意见：</label>
-                                            <textarea class="form-control" rows="5" >写得非常好！</textarea>
+                                            <textarea name ="teacherReview" class="form-control" rows="5" <?php if(!empty($value['导师意见'])){echo "disabled";}?>>写得非常好！</textarea>
                                         </div>
                                          <button type="submit" class="btn btn-default">导出文档</button>
-                                        <button type="submit" class="btn btn-default">提交</button>
-                                        <button type="reset" class="btn btn-default">重置</button>
+                                        <button type="submit" class="btn btn-default" <?php if(!empty($value['导师意见'])){echo "disabled";}?>>提交</button>
+                                        <button type="reset" class="btn btn-default" <?php if(!empty($value['导师意见'])){echo "disabled";}?>>重置</button>
                                     </form>
                                 </div>
                                

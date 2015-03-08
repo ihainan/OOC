@@ -47,6 +47,7 @@
     			}else $paper_statu = "暂未更新";
     			echo "状态".$name."<br>".$studentId["学生id"]."<br>".$statu_apply."<br>".$paper_statu;
     			$arry[$studentId["学生id"]] = array(
+    				"学生id" => $studentId["学生id"],
     				"姓名" => $name,
     				"学号" => $studentId["学生id"],
     				"申请表" => $statu_apply,
