@@ -14,6 +14,7 @@
     require_once("../../phpLibrary/users.php");
     require_once("../../phpLibrary/message_class.php");
     require_once("../../phpLibrary/notorm-master/NotORM.php");
+    require_once("../../phpLibrary/studentInfo.php");
 
     // 初始化数据库
     $pdo = new PDO('mysql:host=lab.ihainan.me;dbname=blind_review_db','ss','123456');
@@ -35,6 +36,10 @@
 
     // 获取用户收到的消息
     $userMessages = $message -> getUserMessage($_COOKIE["username"]);
+    $studentinfo = new studentInfo($db);
+    $stu_number = $studentinfo->getStudentNumber($_COOKIE["username"]);
+    $apply_number = $studentinfo->getNumberApply($_COOKIE["username"]);
+    $papers_number = $studentinfo->getNumberPapers($_COOKIE["username"]);
 ?>
 <html lang="en">
 
@@ -137,12 +142,12 @@
                                     <i class="fa fa-user fa-5x"></i>
                                 </div>
                                 <div class="col-xs-9 text-right">
-                                    <div class="huge">2</div>
+                                    <div class="huge"><?php echo $stu_number;?></div>
                                     <div>学生</div>
                                 </div>
                             </div>
                         </div>
-                        <a href="#">
+                        <a href="students.php">
                             <div class="panel-footer">
                                 <span class="pull-left">查看详情</span>
                                 <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
@@ -159,12 +164,12 @@
                                     <i class="fa fa-list fa-5x"></i>
                                 </div>
                                 <div class="col-xs-9 text-right">
-                                    <div class="huge">2</div>
+                                    <div class="huge"><?php echo $apply_number;?></div>
                                     <div>评审申请表</div>
                                 </div>
                             </div>
                         </div>
-                        <a href="#">
+                        <a href="students.php">
                             <div class="panel-footer">
                                 <span class="pull-left">查看详情</span>
                                 <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
@@ -181,12 +186,12 @@
                                     <i class="fa fa-edit fa-5x"></i>
                                 </div>
                                 <div class="col-xs-9 text-right">
-                                    <div class="huge">1</div>
+                                    <div class="huge"><?php echo $papers_number;?></div>
                                     <div>审核论文</div>
                                 </div>
                             </div>
                         </div>
-                        <a href="#">
+                        <a href="students.php">
                             <div class="panel-footer">
                                 <span class="pull-left">查看详情</span>
                                 <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>

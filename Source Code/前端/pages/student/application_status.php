@@ -7,6 +7,7 @@
 
     // 引用文件
     require_once("../../phpLibrary/users.php");
+    require_once("../../phpLibrary/application.php");
     // 开启错误提示
     error_reporting(E_ALL);
     ini_set('display_errors', 'On');
@@ -22,6 +23,8 @@
     $db = new NotORM($pdo);
     // 初始化 Users 类
     $users = new Users($db);
+    $application = new Application($db);
+    $apply_status = $application -> getApplicationStatusText($_COOKIE["username"]);
 
     $studentInfo = $users->getStudentInfo($_COOKIE["username"]);
     //print_r($studentInfo);
@@ -98,10 +101,10 @@
                             <a href="#"><i class="fa fa-file-text-o fa-fw"></i> 审核申请<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
-                                    <a href="application_form.php"> 填写申请</a>
+                                    <a href="application_form.html"> 填写申请</a>
                                 </li>
                                 <li>
-                                    <a href="application_status.php"> 审核状态</a>
+                                    <a href="application_status.html"> 审核状态</a>
                                 </li>
                             </ul>
                             <!-- /.nav-second-level -->
@@ -146,7 +149,7 @@
                 <div class="col-lg-12">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                           当前状态：<b><font color="#6495ED"><?php if(!empty(flag)){echo $flag;}else echo "未申请";?></font></b>
+                           当前状态：<b><font color="#6495ED"><?php echo $apply_status; ?></font></b>
                         </div>
                         <div class="panel-body">
                             <div class="row">

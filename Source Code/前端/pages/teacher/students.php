@@ -22,7 +22,7 @@
 
     $studentinfo = new studentInfo($db);
     $arry = $studentinfo->getStudentInfo($_COOKIE["username"]);
-    //print_r($arry);
+    print_r($arry);
 ?>
 <html lang="en">
 
@@ -147,7 +147,8 @@
                                         }
                                         echo "<td>".$value["姓名"]."</td>";
                                         echo "<td class="."center".">".$value["学号"]."</td>";
-                                        echo "<td class="."center".">".$value["申请表"]."（<a href="."application_status.php".">查看详情</a>）</td>";
+                                        $link = "application_status.php?userId=".$value["学生id"];
+                                        echo "<td class="."center".">".$value["申请表"]."（<a href= $link".">查看详情</a>）</td>";
                                         if($value["论文审核"] == "暂未更新")
                                             echo "<td>暂未更新</td>";
                                         else if($value["论文审核"] == "论文已上传"){
