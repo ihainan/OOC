@@ -19,7 +19,7 @@
 		**/
 		public function getApplicationInfo($userID){
 			
-			$users = $this -> db -> 评审申请() -> where('学生id', $userID);
+			$users = $this -> db -> 系统用户() -> where('学生id', $userID);
 			if(sizeof($users) == 0){
 				return null;
 			}
