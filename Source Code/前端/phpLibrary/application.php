@@ -12,21 +12,11 @@
 			$this -> db = $db;
 		}
 
-<<<<<<< HEAD
-		/**
-		// 函数: getApplicationInfo()
-		// 功能：获取指定用户的审核申请表
-		// 返回：包含申请表信息的数组
-		**/
-		public function getApplicationInfo($userID){
-			
-			$users = $this -> db -> 评审申请() -> where('学生id', $userID);
-			if(sizeof($users) == 0){
-=======
+
 		public function getApplicationInfo($userId){
 			$apps = $this -> db -> 璇勫鐢宠() -> where('瀛︾敓id', $userId);
 			if(sizeof($apps) == 0){
->>>>>>> 7503f77429654fcf670a5e955ecd5fb47ccd8e97
+
 				return null;
 			}
 			else{
