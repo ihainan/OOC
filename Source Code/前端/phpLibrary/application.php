@@ -68,6 +68,39 @@
 				"isAccedpted" => $isAccedpted,
 				);
 		}
-	}
 
+
+		/** 
+		//	函数: getApplicationStatusText($userid)
+		//	功能：用户申请表的状态
+		//	返回：学生是否已提交 / 导师是否已提交 / 学院是否已审核 / 审核是否通过
+		**/
+		public function getApplicationStatusText($userid){
+			// 获取论文审核状态
+	        $applicationStauts = $this -> getApplicationStatus($userid);
+	        if($applicationStauts["isSchoolSubmitted"]){
+	            if($applicationStauts["isAccedpted"]){
+	                $applicationStautsText = "已通过";
+	            }
+	            else{
+	                $applicationStautsText = "已拒绝";
+	            }
+	        }
+	        else{
+	            if($applicationStauts["isTeacherSubmitted"]){
+	                 $applicationStautsText = "导师已提交";
+	            }
+	            else{
+	               if($applicationStauts["isStudentSubmitted"]){
+	                    $applicationStautsText = "学生已提交";
+	               }
+	               else{
+	                    $applicationStautsText = "学生未提交";
+	               }
+	            }
+	        }
+
+	        return $applicationStautsText;
+		}
+	}
 ?>
