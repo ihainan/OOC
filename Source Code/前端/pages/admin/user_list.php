@@ -19,6 +19,7 @@
     // 获取不同角色用户的数量
     $usersInfo = $users -> getUsersInfo();
 
+    // 获取当前所指定的用户类型
     if(array_key_exists("userType", $_GET)){
         $userType = $_GET["userType"];
     }
@@ -147,7 +148,7 @@
                                         </li>
                                         <li><a href="user_list.php?userType=学生">学生</a>
                                         </li>
-                                        <li><a href="user_list.php?userType=系统管理员">学院管理人员</a>
+                                        <li><a href="user_list.php?userType=学院管理人员">学院管理人员</a>
                                         </li>
                                     </ul>
                                 </div>
@@ -177,7 +178,13 @@
                                                     <td><?php echo $userInfo["用户id"]; ?></td>
                                                     <td><?php echo $userInfo["姓名"]; ?></td>
                                                     <td class="center"><?php echo $userInfo["用户角色"]; ?></td>
-                                                    <td class="center"><a href="./user_info.php?id=<?php echo $userInfo["用户id"]; ?>">查看详情</a></td>
+                                                    <td class="center"><a href="
+                                                        ./role_profile/<?php
+                                                            if($userInfo["用户角色"] == "系统管理员") echo "admin";
+                                                            else if ($userInfo["用户角色"] == "学生") echo "student";
+                                                            else if ($userInfo["用户角色"] == "导师") echo "teacher";
+                                                            else if ($userInfo["用户角色"] == "学院管理人员") echo "manager";
+                                                        ?>.php?id=<?php echo $userInfo["用户id"]; ?>">查看详情</a></td>
                                                     <td><input type="checkbox"></td>
                                                 </tr>
                                                 <?php

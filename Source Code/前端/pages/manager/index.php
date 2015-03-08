@@ -72,6 +72,9 @@
                             <a href="index.html"><i class="fa fa-dashboard fa-fw"></i> 概要</a>
                         </li>
                         <li>
+                            <a href="openApplication.php"><i class="fa fa-pencil fa-fw"></i> 开放申请</a>
+                        </li>
+                        <li>
                             <a href="students.html"><i class="fa fa-users fa-fw"></i> 学生列表</a>
                         </li>
                         <li>

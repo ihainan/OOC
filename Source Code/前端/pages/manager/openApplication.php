@@ -1,31 +1,3 @@
-<?php
-    // print_r($_COOKIE);
-    if(strcmp($_COOKIE["role"],"系统管理员")){
-       header("refresh:3;url=../login.php");
-       echo "无权限浏览此页，3秒后跳转...";
-       exit();
-      }
-
-    // 开启错误提示
-    error_reporting(E_ALL);
-    ini_set('display_errors', 'On');
-
-    // 引用文件
-    require_once("../../phpLibrary/users.php");
-    require_once("../../phpLibrary/notorm-master/NotORM.php");
-
-    // 初始化数据库
-    $pdo = new PDO('mysql:host=lab.ihainan.me;dbname=blind_review_db','ss','123456');
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $pdo->exec('set names utf8');
-    $db = new NotORM($pdo);
-
-    // 初始化 Users 类
-    $users = new Users($db);
-
-    // 获取不同角色用户的数量
-    $userInfo = $users -> getUserInfo($_COOKIE["username"]);
-?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -75,7 +47,7 @@
 
     <div id="wrapper">
 
-        <!-- Navigation -->
+       <!-- Navigation -->
         <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -95,22 +67,22 @@
                     <ul class="nav" id="side-menu">
                         
                         <li>
-                            <a href="index.php"><i class="fa fa-dashboard fa-fw"></i> 概要</a>
+                            <a href="index.html"><i class="fa fa-dashboard fa-fw"></i> 概要</a>
                         </li>
                         <li>
                             <a href="#"><i class="fa fa-users fa-fw"></i> 用户管理<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
-                                    <a href="user_list.php"> 用户列表</a>
+                                    <a href="user_list.html"> 用户列表</a>
                                 </li>
                                 <li>
-                                    <a href="add_user.php"> 添加用户</a>
+                                    <a href="add_user.html"> 添加用户</a>
                                 </li>
                             </ul>
                             <!-- /.nav-second-level -->
                         </li>
                         <li>
-                            <a href="profile.php"><i class="fa fa-user fa-fw"></i> 个人资料</a>
+                            <a href="profile.html"><i class="fa fa-user fa-fw"></i> 个人资料</a>
                         </li>
                         <li>
                             <a href="javascript:winconfirm()"><i class="fa fa-sign-out fa-fw"></i> 登出系统</a>
@@ -122,76 +94,42 @@
             <!-- /.navbar-static-side -->
         </nav>
 
-        <div id="page-wrapper">
+       <div id="page-wrapper">
             <div class="row">
                 <div class="col-lg-12">
-                    <h1 class="page-header">个人资料</h1>
+                    <h1 class="page-header">开放审核申请</h1>
                 </div>
                 <!-- /.col-lg-12 -->
             </div>
-           
-           <div class="container">
-      <div class="row">
-
-        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xs-offset-0 col-sm-offset-0   toppad" >
-   
-   
-          <div class="panel panel-info">
-            <div class="panel-heading">
-              <h3 class="panel-title"><?php echo $userInfo["用户id"];?></h3>
-            </div>
-            <div class="panel-body">
-              <div class="row">
-                <div class="col-md-3 col-lg-3 " align="center"> <img alt="User Pic" src="https://lh5.googleusercontent.com/-b0-k99FZlyE/AAAAAAAAAAI/AAAAAAAAAAA/eu7opA4byxI/photo.jpg?sz=100" class="img-circle"> </div>
-                
-                <!--<div class="col-xs-10 col-sm-10 hidden-md hidden-lg"> <br>
-                  <dl>
-                    <dt>DEPARTMENT:</dt>
-                    <dd>Administrator</dd>
-                    <dt>HIRE DATE</dt>
-                    <dd>11/12/2013</dd>
-                    <dt>DATE OF BIRTH</dt>
-                       <dd>11/12/2013</dd>
-                    <dt>GENDER</dt>
-                    <dd>Male</dd>
-                  </dl>
-                </div>-->
-                <div class=" col-md-9 col-lg-9 "> 
-                  <table class="table table-user-information">
-                    <tbody>
-                      <tr>
-                        <td>真实姓名：</td>
-                        <td><?php echo $userInfo["姓名"];?></td>
-                      </tr>
-                      <tr>
-                        <td>角色：</td>
-                        <td><?php echo $userInfo["用户角色"];?></td>
-                      </tr>
-                        <tr>
-                        <td>密码：</td>
-                        <td><input type="password" value="123456" /></td>
-                      </tr>
-                      <tr>
-
-                      </tr>
-
-                        </td>
-                           
-                      </tr>
-                     
-                    </tbody>
-                  </table>
-                    <a href="#" class="btn btn-primary">更新</a>
-                    <a href="#" class="btn btn-primary">重置</a>
+            <!-- /.row -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                        </div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <form role="form">
+                                        <div class="form-group">
+                                            <label>截止日期：</label>
+                                            <input type="date" name="bday">
+                                        </div>
+                                        <button type="submit" class="btn btn-default">开放</button>
+                                        <button type="reset" class="btn btn-default">重置</button>
+                                    </form>
+                                </div>
+                               
+                            </div>
+                            <!-- /.row (nested) -->
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                    <!-- /.panel -->
                 </div>
-              </div>
+                <!-- /.col-lg-12 -->
             </div>
-
-            
-          </div>
-        </div>
-      </div>
-    </div>
+            <!-- /.row -->
         </div>
         <!-- /#page-wrapper -->
 

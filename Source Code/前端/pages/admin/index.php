@@ -138,7 +138,7 @@
                                 </div>
                             </div>
                         </div>
-                        <a href="#">
+                        <a href="user_list.php?userType=系统管理员">
                             <div class="panel-footer">
                                 <span class="pull-left">查看详情</span>
                                 <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
@@ -160,7 +160,7 @@
                                 </div>
                             </div>
                         </div>
-                        <a href="#">
+                        <a href="user_list.php?userType=导师">
                             <div class="panel-footer">
                                 <span class="pull-left">查看详情</span>
                                 <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
@@ -182,7 +182,7 @@
                                 </div>
                             </div>
                         </div>
-                        <a href="#">
+                        <a href="user_list.php?userType=学生">
                             <div class="panel-footer">
                                 <span class="pull-left">查看详情</span>
                                 <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
@@ -204,7 +204,7 @@
                                 </div>
                             </div>
                         </div>
-                        <a href="#">
+                        <a href="user_list.php?userType=学院管理人员">
                             <div class="panel-footer">
                                 <span class="pull-left">查看详情</span>
                                 <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>

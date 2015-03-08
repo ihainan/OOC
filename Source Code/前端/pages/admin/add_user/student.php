@@ -11,8 +11,8 @@
     ini_set('display_errors', 'On');
 
     // 引用文件
-    require_once("../../phpLibrary/users.php");
-    require_once("../../phpLibrary/notorm-master/NotORM.php");
+    require_once("../../../phpLibrary/users.php");
+    require_once("../../../phpLibrary/notorm-master/NotORM.php");
 
     // 初始化数据库
     $pdo = new PDO('mysql:host=lab.ihainan.me;dbname=blind_review_db','ss','123456');
@@ -23,9 +23,18 @@
     // 初始化 Users 类
     $users = new Users($db);
 
-    // 获取不同角色用户的数量
-    $userInfo = $users -> getUserInfo($_COOKIE["username"]);
+    // 获取需要查询的用户 ID
+    if(array_key_exists("id", $_GET)){
+        $userId = $_GET["id"];
+    }
+    else{
+        $userId = "全部";
+    }
+
+    // 获取用户详细信息
+    $userInfo = $users -> getStudentInfo($userId);
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -40,27 +49,27 @@
     <title>北京理工大学软件学院 - 研究生论文盲审系统</title>
 
     <!-- Bootstrap Core CSS -->
-    <link href="../../bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../../../bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- MetisMenu CSS -->
-    <link href="../../bower_components/metisMenu/dist/metisMenu.min.css" rel="stylesheet">
+    <link href="../../../bower_components/metisMenu/dist/metisMenu.min.css" rel="stylesheet">
 
     <!-- Timeline CSS -->
-    <link href="../../dist/css/timeline.css" rel="stylesheet">
+    <link href="../../../dist/css/timeline.css" rel="stylesheet">
 
     <!-- Custom CSS -->
-    <link href="../../dist/css/sb-admin-2.css" rel="stylesheet">
-    <link href="../../dist/css/profile.css" rel="stylesheet">
+    <link href="../../../dist/css/sb-admin-2.css" rel="stylesheet">
+    <link href="../../../dist/css/profile.css" rel="stylesheet">
 
 
     <!-- Morris Charts CSS -->
-    <link href="../../bower_components/morrisjs/morris.css" rel="stylesheet">
+    <link href="../../../bower_components/morrisjs/morris.css" rel="stylesheet">
 
     <!-- Custom Fonts -->
-    <link href="../../bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="../../../bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
 
     <!-- Custom Script -->
-    <script src="../../dist/css/profile.js"></script>
+    <script src="../../../dist/css/profile.js"></script>
     
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -84,7 +93,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="index.html">研究生论文盲审系统</a>
+                <a class="navbar-brand" href="index.php">研究生论文盲审系统</a>
             </div>
             <!-- /.navbar-header -->
 
@@ -95,22 +104,22 @@
                     <ul class="nav" id="side-menu">
                         
                         <li>
-                            <a href="index.php"><i class="fa fa-dashboard fa-fw"></i> 概要</a>
+                            <a href="../index.php"><i class="fa fa-dashboard fa-fw"></i> 概要</a>
                         </li>
                         <li>
                             <a href="#"><i class="fa fa-users fa-fw"></i> 用户管理<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
-                                    <a href="user_list.php"> 用户列表</a>
+                                    <a href="../user_list.php"> 用户列表</a>
                                 </li>
                                 <li>
-                                    <a href="add_user.php"> 添加用户</a>
+                                    <a href="../add_user.php"> 添加用户</a>
                                 </li>
                             </ul>
                             <!-- /.nav-second-level -->
                         </li>
                         <li>
-                            <a href="profile.php"><i class="fa fa-user fa-fw"></i> 个人资料</a>
+                            <a href="../profile.php"><i class="fa fa-user fa-fw"></i> 个人资料</a>
                         </li>
                         <li>
                             <a href="javascript:winconfirm()"><i class="fa fa-sign-out fa-fw"></i> 登出系统</a>
@@ -167,9 +176,25 @@
                         <td>角色：</td>
                         <td><?php echo $userInfo["用户角色"];?></td>
                       </tr>
-                        <tr>
-                        <td>密码：</td>
-                        <td><input type="password" value="123456" /></td>
+                      <tr>
+                        <td>E-mail：</td>
+                        <td><?php echo $userInfo["Email"];?></td>
+                      </tr>
+                      <tr>
+                        <td>电话：</td>
+                        <td><?php echo $userInfo["电话"];?></td>
+                      </tr>
+                      <tr>
+                        <td>导师：</td>
+                        <td><?php echo $userInfo["导师"];?></td>
+                      </tr>
+                      <tr>
+                        <td>入学时间：</td>
+                        <td><?php echo $userInfo["入学时间"];?></td>
+                      </tr>
+                      <tr>
+                        <td>盲审次数：</td>
+                        <td><?php echo $userInfo["盲审次数"];?></td>
                       </tr>
                       <tr>
 
@@ -181,8 +206,6 @@
                      
                     </tbody>
                   </table>
-                    <a href="#" class="btn btn-primary">更新</a>
-                    <a href="#" class="btn btn-primary">重置</a>
                 </div>
               </div>
             </div>
@@ -199,21 +222,21 @@
     <!-- /#wrapper -->
 
     <!-- jQuery -->
-    <script src="../../bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="../../../bower_components/jquery/dist/jquery.min.js"></script>
 
     <!-- Bootstrap Core JavaScript -->
-    <script src="../../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="../../../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 
     <!-- Metis Menu Plugin JavaScript -->
-    <script src="../../bower_components/metisMenu/dist/metisMenu.min.js"></script>
+    <script src="../../../bower_components/metisMenu/dist/metisMenu.min.js"></script>
 
     <!-- Morris Charts JavaScript -->
-    <script src="../../bower_components/raphael/raphael-min.js"></script>
-    <script src="../../bower_components/morrisjs/morris.min.js"></script>
-    <script src="../../js/morris-data.js"></script>
+    <script src="../../../bower_components/raphael/raphael-min.js"></script>
+    <script src="../../../bower_components/morrisjs/morris.min.js"></script>
+    <script src="../../../js/morris-data.js"></script>
 
     <!-- Custom Theme JavaScript -->
-    <script src="../../dist/js/sb-admin-2.js"></script>
+    <script src="../../../dist/js/sb-admin-2.js"></script>
 
 </body>
 
