@@ -1,3 +1,65 @@
+<?php    
+    if(strcmp($_COOKIE["role"],"系统管理员")){
+       header("refresh:3;url=../login.php");
+       echo "无权限浏览此页，3秒后跳转...";
+       exit();
+    }
+
+    // 开启错误提示
+    error_reporting(E_ALL);
+    ini_set('display_errors', 'On');
+
+
+    // 引用文件
+    require_once("../../phpLibrary/users.php");
+    require_once("../../phpLibrary/notorm-master/NotORM.php");
+
+    // 初始化数据库
+    $pdo = new PDO('mysql:host=lab.ihainan.me;dbname=blind_review_db','ss','123456');
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $pdo->exec('set names utf8');
+    $db = new NotORM($pdo);
+
+    // 初始化 Users 类
+    $users = new Users($db);
+
+    // 添加用户
+    if(array_key_exists("用户id", $_POST)
+        && array_key_exists("密码", $_POST) 
+        && array_key_exists("姓名", $_POST)){
+        
+        $result = $users -> addAdminUser(array(    
+            "用户id" => $_POST["用户id"],
+            "用户角色" => "系统管理员", 
+            "密码" => $_POST["密码"],
+            "姓名" => $_POST["姓名"]));
+
+
+        // Cookie 操作，存储近期操作
+        if(array_key_exists("recent_operations", $_COOKIE)){
+             $oldArray = unserialize($_COOKIE['recent_operations']);
+             $oldArray[time()] = "添加了管理员用户 ".$_POST["用户id"];
+             setcookie("recent_operations", 
+                serialize($oldArray),
+                time() + 3600,
+                "/");
+        }
+        else{
+            
+            $emptyArray = array(time() => "添加了管理员用户 ".$_POST["用户id"]);
+            setcookie("recent_operations", 
+                serialize($emptyArray),
+                time() + 3600,
+                "/");
+
+        }
+
+        $message = "添加用户成功！";
+        echo "<script type='text/javascript'>alert('$message');</script>";
+    }
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -129,43 +191,37 @@
                   </dl>
                 </div>-->
                 <div class=" col-md-9 col-lg-9 "> 
-                  <table class="table table-user-information">
-                    <tbody>
-                      <tr>
-                        <td>用户角色：</td>
-                        <td>
-                            <select name=""> 
-                                <option value="0">管理员</option> 
-                                <option value="1">研究生</option> 
-                                <option value="2">导师</option> 
-                                <option value="3">学院管理人员</option> 
-                            </select>
-
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>用户名：</td>
-                        <td><input type="text" value="ihainan"></td>
-                      </tr>
-                      </tr>
-                        <tr>
-                        <td>密码：</td>
-                        <td><input type="password" value="123456" /></td>
-                      </tr>
-                      <tr>
-                        <td>真实姓名：</td>
-                        <td><input type="text" value="符积高"></td>
-                      </tr>
-                      </tr>
-
-                        </td>
-                           
-                      </tr>
-                     
-                    </tbody>
-                  </table>
-                    <a href="#" class="btn btn-primary">添加</a>
+                <form action="#" method="post" id = "form-id">
+                    <table class="table table-user-information">
+                        <tbody>
+                          <tr>
+                            <td>用户角色：</td>
+                            <td>
+                                <select name=""> 
+                                    <option value="0">管理员</option> 
+                                    <option value="1">研究生</option> 
+                                    <option value="2">导师</option> 
+                                    <option value="3">学院管理人员</option> 
+                                </select>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>用户名：</td>
+                            <td><input type="text" value="ihainan" name="用户id" /></td>
+                          </tr>
+                          <tr>
+                            <td>密码：</td>
+                            <td><input type="password" value="123456" name = "密码"/></td>
+                          </tr>
+                          <tr>
+                            <td>真实姓名：</td>
+                            <td><input type="text" value="符积高" name = "姓名"/></td>
+                          </tr>
+                        </tbody>
+                    </table>
+                    <a class="btn btn-primary" onclick="document.getElementById('form-id').submit();">添加</a>
                     <a href="#" class="btn btn-primary">重置</a>
+                </form>
                 </div>
               </div>
             </div>

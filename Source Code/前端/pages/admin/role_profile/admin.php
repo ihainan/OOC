@@ -36,11 +36,19 @@
 
     // Cookie 操作，存储近期操作
     if(array_key_exists("recent_operations", $_COOKIE)){
-
+         $oldArray = unserialize($_COOKIE['recent_operations']);
+         $oldArray[time()] = "查看了管理员用户 ".$userId." 的信息";
+         setcookie("recent_operations", 
+            serialize($oldArray),
+            time() + 3600,
+            "/");
     }
     else{
-        $emptyArray = array();
-        
+        $emptyArray = array(time() => "查看了管理员用户 ".$userId." 的信息");
+        setcookie("recent_operations", 
+            serialize($emptyArray),
+            time() + 3600,
+            "/");
     }
 ?>
 
@@ -101,7 +109,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="index.php">研究生论文盲审系统</a>
+                <a class="navbar-brand" href="../index.php">研究生论文盲审系统</a>
             </div>
             <!-- /.navbar-header -->
 

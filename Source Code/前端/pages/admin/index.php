@@ -25,6 +25,15 @@
 
     // 获取不同角色用户的数量
     $usersNum = $users -> getUsersNumber();
+
+    // Cookie 操作，存储近期操作
+    if(array_key_exists("recent_operations", $_COOKIE)){
+        $oldArray = unserialize($_COOKIE['recent_operations']);
+    }
+    else{
+        $oldArray = array();
+    }
+    krsort($oldArray);
 ?>
 <html lang="en">
 
@@ -98,7 +107,7 @@
                                     <a href="user_list.php"> 用户列表</a>
                                 </li>
                                 <li>
-                                    <a href="add_user.php"> 添加用户</a>
+                                    <a href="add_user/admin.php"> 添加用户</a>
                                 </li>
                             </ul>
                             <!-- /.nav-second-level -->
@@ -224,9 +233,13 @@
                             </div>
                         </div>
                         <!-- /.panel-heading -->
-                                                <div class="panel-body">
+                        <div class="panel-body">
                             <ul class="chat">
-                                <li class="left clearfix">
+                                <?php
+                                    $i = 0;
+                                    foreach ($oldArray as $time => $operation) {
+                                ?>
+                                    <li class="left clearfix">
                                     <span class="chat-img pull-left">
                                         <img src="http://placehold.it/50/55C1E7/fff" alt="User Avatar" class="img-circle" />
                                     </span>
@@ -234,30 +247,25 @@
                                         <div class="header">
                                             <strong class="primary-font">admin</strong>
                                             <small class="pull-right text-muted">
-                                                <i class="fa fa-clock-o fa-fw"></i> 13 mins ago
+                                                <i class="fa fa-clock-o fa-fw"></i> 
+                                                <?php 
+                                                    $dt = new DateTime();
+                                                    $dt -> setTimestamp($time);
+                                                    echo $dt->format('Y-m-d H:i:s'); 
+                                                ?>
                                             </small>
                                         </div>
                                         <p>
-                                            添加了研究生用户陈凯。
+                                            <?php echo $operation; ?>
                                         </p>
                                     </div>
                                 </li>
-                                <li class="left clearfix">
-                                    <span class="chat-img pull-left">
-                                        <img src="http://placehold.it/50/55C1E7/fff" alt="User Avatar" class="img-circle" />
-                                    </span>
-                                    <div class="chat-body clearfix">
-                                        <div class="header">
-                                            <strong class="primary-font">admin</strong>
-                                            <small class="pull-right text-muted">
-                                                <i class="fa fa-clock-o fa-fw"></i> 15 mins ago
-                                            </small>
-                                        </div>
-                                        <p>
-                                            添加了研究生用户符积高。
-                                        </p>
-                                    </div>
-                                </li>
+                                <?php
+                                    $i++;
+                                    if($i >= 5)
+                                        break;
+                                    }
+                                ?>
                             </ul>
                         </div>
                         <!-- /.panel-body -->
