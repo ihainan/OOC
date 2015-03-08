@@ -1,4 +1,40 @@
-<!DOCTYPE html>
+<?php
+    if(strcmp($_COOKIE["role"],"学院管理人员")){
+       header("refresh:3;url=../login.php");
+       echo "无权限浏览此页，3秒后跳转...";
+       exit();
+      }
+      // 开启错误提示
+    error_reporting(E_ALL);
+    ini_set('display_errors', 'On');
+    require_once ("../../phpLibrary/mysql.php");
+    //require_once ("../../phpLibrary/cookie.php");
+    if(!empty($_GET["bday"])){
+        $bday = $_GET["bday"];
+        $open_application = $db->开放审核申请();
+        $data = array(
+            "截止日期" => $bday,
+            "操作人id" => $_COOKIE["username"]);
+        $result = $open_application->insert($data);
+        if($result){
+            $sent_message = $db->消息表();
+            $message = array(
+                "消息标题" => "开放申请通知",
+                "消息内容" => "论文审核申请已经开始，请同学们在".$bday."前完成申请。",
+                "消息接受用户id" => "*",
+                "time",time());
+            $msg_result = $sent_message->insert($message);
+            echo $msg_result["id"];
+        }
+        //echo $result["id"];
+    }
+    $maxid = $db->开放审核申请()->max("id");
+    //echo $maxid;
+    $last_open_time = $db->开放审核申请()->where("id",$maxid)->fetch()["截止日期"];
+    //echo $last_open_time;
+
+    echo date("y-m-d",time());
+?>
 <html lang="en">
 
 <head>
@@ -47,7 +83,7 @@
 
     <div id="wrapper">
 
-       <!-- Navigation -->
+        <!-- Navigation -->
         <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -56,7 +92,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="index.html">研究生论文盲审系统</a>
+                <a class="navbar-brand" href="index.php">研究生论文盲审系统</a>
             </div>
             <!-- /.navbar-header -->
 
@@ -67,22 +103,16 @@
                     <ul class="nav" id="side-menu">
                         
                         <li>
-                            <a href="index.html"><i class="fa fa-dashboard fa-fw"></i> 概要</a>
+                            <a href="index.php"><i class="fa fa-dashboard fa-fw"></i> 概要</a>
                         </li>
                         <li>
-                            <a href="#"><i class="fa fa-users fa-fw"></i> 用户管理<span class="fa arrow"></span></a>
-                            <ul class="nav nav-second-level">
-                                <li>
-                                    <a href="user_list.html"> 用户列表</a>
-                                </li>
-                                <li>
-                                    <a href="add_user.html"> 添加用户</a>
-                                </li>
-                            </ul>
-                            <!-- /.nav-second-level -->
+                            <a href="openApplication.php"><i class="fa fa-pencil fa-fw"></i> 开放申请</a>
                         </li>
                         <li>
-                            <a href="profile.html"><i class="fa fa-user fa-fw"></i> 个人资料</a>
+                            <a href="students.php"><i class="fa fa-users fa-fw"></i> 学生列表</a>
+                        </li>
+                        <li>
+                            <a href="profile.php"><i class="fa fa-user fa-fw"></i> 个人资料</a>
                         </li>
                         <li>
                             <a href="javascript:winconfirm()"><i class="fa fa-sign-out fa-fw"></i> 登出系统</a>
@@ -97,7 +127,16 @@
        <div id="page-wrapper">
             <div class="row">
                 <div class="col-lg-12">
-                    <h1 class="page-header">开放审核申请</h1>
+                    <h1 class="page-header">开放审核申请
+                    <?php 
+                    if(time() < strtotime($last_open_time)){
+                        echo "　"."已开放申请，截止日期:".$last_open_time;
+                       
+                    }else {
+                        echo "　"."未开放申请";
+                        
+                    }
+                    ?></h1>
                 </div>
                 <!-- /.col-lg-12 -->
             </div>
@@ -110,7 +149,7 @@
                         <div class="panel-body">
                             <div class="row">
                                 <div class="col-lg-6">
-                                    <form role="form">
+                                    <form role="form" id=setdate>
                                         <div class="form-group">
                                             <label>截止日期：</label>
                                             <input type="date" name="bday">
@@ -152,7 +191,6 @@
 
     <!-- Custom Theme JavaScript -->
     <script src="../../dist/js/sb-admin-2.js"></script>
-
 </body>
 
 </html>

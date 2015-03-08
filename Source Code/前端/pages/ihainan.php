@@ -4,8 +4,9 @@
 	ini_set('display_errors', 'On');
 
 	// 引用文件
-	require_once("../phpLibrary/users.php");
 	require_once("../phpLibrary/notorm-master/NotORM.php");
+	require_once("../phpLibrary/users.php");
+	require_once("../phpLibrary/message_class.php");
 
 	// 初始化数据库
     $pdo = new PDO('mysql:host=lab.ihainan.me;dbname=blind_review_db','ss','123456');
@@ -14,6 +15,7 @@
     $db = new NotORM($pdo);
 
     // 初始化 Users 类
+
 	$users = new Users($db);
 
 	/* 函数功能测试 */
@@ -24,5 +26,8 @@
 
 	// 获取指定 ID 用户的信息
 	$usersInfo = $users -> getUsersInfo();
-	print_r($usersInfo);
+	// print_r($usersInfo);
+
+	$message = new Message($db);
+	$message -> getUserMessage("2220140550");
 ?>

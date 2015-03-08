@@ -4,7 +4,37 @@
        header("refresh:3;url=../login.php");
        echo "无权限浏览此页，3秒后跳转...";
        exit();
-      }
+    }
+
+    // 开启错误提示
+    error_reporting(E_ALL);
+    ini_set('display_errors', 'On');
+
+    // 引用文件
+    require_once("../../phpLibrary/users.php");
+    require_once("../../phpLibrary/message_class.php");
+    require_once("../../phpLibrary/notorm-master/NotORM.php");
+
+    // 初始化数据库
+    $pdo = new PDO('mysql:host=lab.ihainan.me;dbname=blind_review_db','ss','123456');
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $pdo->exec('set names utf8');
+    $db = new NotORM($pdo);
+
+    // Cookie 操作，存储近期操作
+    if(array_key_exists("recent_operations", $_COOKIE) && isset($_COOKIE["recent_operations"])){
+        $oldArray = unserialize($_COOKIE['recent_operations']);
+    }
+    else{
+        $oldArray = array();
+    }
+    krsort($oldArray);
+
+    // 初始化 Message 类
+    $message = new Message($db);
+
+    // 获取用户收到的消息
+    $userMessages = $message -> getUserMessage($_COOKIE["username"]);
 ?>
 <html lang="en">
 
@@ -58,7 +88,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="index.html">研究生论文盲审系统</a>
+                <a class="navbar-brand" href="index.php">研究生论文盲审系统</a>
             </div>
             <!-- /.navbar-header -->
 
@@ -69,16 +99,16 @@
                     <ul class="nav" id="side-menu">
                         
                         <li>
-                            <a href="index.html"><i class="fa fa-dashboard fa-fw"></i> 概要</a>
+                            <a href="index.php"><i class="fa fa-dashboard fa-fw"></i> 概要</a>
                         </li>
                         <li>
                             <a href="#"><i class="fa fa-file-text-o fa-fw"></i> 审核申请<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
-                                    <a href="application_form.html"> 填写申请</a>
+                                    <a href="application_form.php"> 填写申请</a>
                                 </li>
                                 <li>
-                                    <a href="application_status.html"> 审核状态</a>
+                                    <a href="application_status.php"> 审核状态</a>
                                 </li>
                             </ul>
                             <!-- /.nav-second-level -->
@@ -87,19 +117,19 @@
                             <a href="#"><i class="fa fa-file-text-o fa-fw"></i> 论文评审<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
-                                    <a href="upload_paper.html"> 上传论文</a>
+                                    <a href="upload_paper.php"> 上传论文</a>
                                 </li>
                                 <li>
-                                    <a href="add_modify.html"> 提交修改说明</a>
+                                    <a href="add_modify.php"> 提交修改说明</a>
                                 </li>
                                 <li>
-                                    <a href="review_status.html"> 评审结果</a>
+                                    <a href="review_status.php"> 评审结果</a>
                                 </li>
                             </ul>
                             <!-- /.nav-second-level -->
                         </li>
                         <li>
-                            <a href="profile.html"><i class="fa fa-user fa-fw"></i> 个人资料</a>
+                            <a href="profile.php"><i class="fa fa-user fa-fw"></i> 个人资料</a>
                         </li>
                         <li>
                             <a href="javascript:winconfirm()"><i class="fa fa-sign-out fa-fw"></i> 登出系统</a>
@@ -129,32 +159,44 @@
                             </div>
                         </div>
                         <!-- /.panel-heading -->
-                                                <div class="panel-body">
+                        <div class="panel-body">
                             <ul class="chat">
-                                <li class="left clearfix">
+                                <?php
+                                    $i = 0;
+                                    foreach ($oldArray as $time => $operation) {
+                                ?>
+                                    <li class="left clearfix">
                                     <span class="chat-img pull-left">
                                         <img src="http://placehold.it/50/55C1E7/fff" alt="User Avatar" class="img-circle" />
                                     </span>
                                     <div class="chat-body clearfix">
                                         <div class="header">
-                                            <strong class="primary-font">ihainan</strong>
+                                            <strong class="primary-font"><?php echo $_COOKIE["username"]?></strong>
                                             <small class="pull-right text-muted">
-                                                <i class="fa fa-clock-o fa-fw"></i> 20 mins ago
+                                                <i class="fa fa-clock-o fa-fw"></i> 
+                                                <?php 
+                                                    $dt = new DateTime();
+                                                    $dt -> setTimestamp($time);
+                                                    echo $dt->format('Y-m-d H:i:s'); 
+                                                ?>
                                             </small>
                                         </div>
                                         <p>
-                                            填写了《研究生学位论文评审申请书》。
+                                            <?php echo $operation; ?>
                                         </p>
                                     </div>
                                 </li>
-
+                                <?php
+                                    $i++;
+                                    if($i >= 5)
+                                        break;
+                                    }
+                                ?>
                             </ul>
                         </div>
                         <!-- /.panel-body -->
                     </div>
-
-
-                    <!-- /.panel -->
+                        <!-- /.panel -->
                 </div>
                 <!-- /.col-lg-8 -->
                 <div class="col-lg-4">
@@ -165,23 +207,23 @@
                         <!-- /.panel-heading -->
                         <div class="panel-body">
                             <div class="list-group">
-                                <a href="#" class="list-group-item">
-                                    <i class="fa fa-comment fa-fw"></i> 您的论文盲审申请已经通…
-                                    <span class="pull-right text-muted small"><em>4 分钟前</em>
-                                    </span>
-                                </a>
-                                <a href="#" class="list-group-item">
-                                    <i class="fa fa-comment fa-fw"></i> 您的导师已经填写导师意…
-                                    <span class="pull-right text-muted small"><em>15 分钟前</em>
-                                    </span>
-                                </a>
+                                <?php
+                                    foreach ($userMessages as $userMessage) {
+                                ?>
+                                    <a href="#" class="list-group-item">
+                                        <i class="fa fa-comment fa-fw"></i> <?php echo $userMessage["消息标题"];?>
+                                        <span class="pull-right text-muted small"><em><?php echo $userMessage["time"];?></em>
+                                        </span>
+                                    </a>
+                                <?php
+                                    }
+                                ?>
                             </div>
                             <!-- /.list-group -->
                             <a href="#" class="btn btn-default btn-block">查看所有消息</a>
                         </div>
                         <!-- /.panel-body -->
                     </div>
-
                 </div>
                 <!-- /.col-lg-4 -->
             </div>

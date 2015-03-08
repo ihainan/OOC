@@ -1,14 +1,14 @@
-<?php
-    // print_r($_COOKIE);
+<?php    
     if(strcmp($_COOKIE["role"],"系统管理员")){
        header("refresh:3;url=../login.php");
        echo "无权限浏览此页，3秒后跳转...";
        exit();
-      }
+    }
 
     // 开启错误提示
     error_reporting(E_ALL);
     ini_set('display_errors', 'On');
+
 
     // 引用文件
     require_once("../../../phpLibrary/users.php");
@@ -23,16 +23,51 @@
     // 初始化 Users 类
     $users = new Users($db);
 
-    // 获取需要查询的用户 ID
-    if(array_key_exists("id", $_GET)){
-        $userId = $_GET["id"];
-    }
-    else{
-        $userId = "全部";
+    // 添加用户
+    if(array_key_exists("用户id", $_POST)
+        && array_key_exists("密码", $_POST) 
+        && array_key_exists("姓名", $_POST)){
+        
+        $userBasicInfo = array(    
+                "用户id" => $_POST["用户id"],
+                "用户角色" => "导师", 
+                "密码" => md5($_POST["密码"]),
+                "姓名" => $_POST["姓名"]);
+        
+        $externInfo = array(
+                "导师id" => $_POST["用户id"],
+                "Email" => $_POST["Email"],
+                "电话" => $_POST["电话"],
+                "学院" => $_POST["学院"],
+                "擅长领域" => $_POST["擅长领域"],
+                );
+
+        $result = $users -> addTeacherUser($userBasicInfo, $externInfo);
+
+
+        // Cookie 操作，存储近期操作
+        if(array_key_exists("recent_operations", $_COOKIE)){
+             $oldArray = unserialize($_COOKIE['recent_operations']);
+             $oldArray[time()] = "添加了导师用户 ".$_POST["用户id"];
+             setcookie("recent_operations", 
+                serialize($oldArray),
+                time() + 3600,
+                "/");
+        }
+        else{
+            
+            $emptyArray = array(time() => "添加了导师用户 ".$_POST["用户id"]);
+            setcookie("recent_operations", 
+                serialize($emptyArray),
+                time() + 3600,
+                "/");
+
+        }
+
+        $message = "添加用户成功！";
+        echo "<script type='text/javascript'>alert('$message');</script>";
     }
 
-    // 获取用户详细信息
-    $userInfo = $users -> getTeacherInfo($userId);
 ?>
 
 <!DOCTYPE html>
@@ -77,7 +112,22 @@
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
-
+    <script type="text/javascript">
+        function getval(sel) {
+            if(sel.value == 0){
+                window.location.replace("admin.php");
+            }
+            else if(sel.value == 1){
+                window.location.replace("student.php");
+            }
+            else if(sel.value == 2){
+                window.location.replace("teacher.php");
+            }
+            else if(sel.value == 3){
+                window.location.replace("manager.php");
+            }
+        }
+    </script>
 </head>
 
 <body>
@@ -93,7 +143,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="index.php">研究生论文盲审系统</a>
+                <a class="navbar-brand" href="../index.php">研究生论文盲审系统</a>
             </div>
             <!-- /.navbar-header -->
 
@@ -113,7 +163,7 @@
                                     <a href="../user_list.php"> 用户列表</a>
                                 </li>
                                 <li>
-                                    <a href="../add_user.php"> 添加用户</a>
+                                    <a href="#"> 添加用户</a>
                                 </li>
                             </ul>
                             <!-- /.nav-second-level -->
@@ -134,7 +184,7 @@
         <div id="page-wrapper">
             <div class="row">
                 <div class="col-lg-12">
-                    <h1 class="page-header">个人资料</h1>
+                    <h1 class="page-header">添加用户</h1>
                 </div>
                 <!-- /.col-lg-12 -->
             </div>
@@ -147,7 +197,7 @@
    
           <div class="panel panel-info">
             <div class="panel-heading">
-              <h3 class="panel-title"><?php echo $userInfo["用户id"];?></h3>
+              <h3 class="panel-title">添加导师角色</h3>
             </div>
             <div class="panel-body">
               <div class="row">
@@ -166,32 +216,53 @@
                   </dl>
                 </div>-->
                 <div class=" col-md-9 col-lg-9 "> 
-                  <table class="table table-user-information">
-                    <tbody>
-                      <tr>
-                        <td>真实姓名：</td>
-                        <td><?php echo $userInfo["姓名"];?></td>
-                      </tr>
-                      <tr>
-                        <td>角色：</td>
-                        <td><?php echo $userInfo["用户角色"];?></td>
-                      </tr>
-                      <tr>
-                        <td>E-mail：</td>
-                        <td><?php echo $userInfo["Email"];?></td>
-                      </tr>
-                      <tr>
-                        <td>电话：</td>
-                        <td><?php echo $userInfo["电话"];?></td>
-                      </tr>
-                      <tr>
-                        <td>学院：</td>
-                        <td><?php echo $userInfo["学院"];?></td>
-                      </tr>
-                    
-                     
-                    </tbody>
-                  </table>
+                <form action="#" method="post" id = "form-id">
+                    <table class="table table-user-information">
+                        <tbody>
+                          <tr>
+                            <td>用户角色：</td>
+                            <td>
+                                <select onchange="getval(this);"> 
+                                    <option value="2">导师</option> 
+                                    <option value="0">管理员</option> 
+                                    <option value="1">研究生</option> 
+                                    <option value="3">学院管理人员</option> 
+                                </select>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>用户名：</td>
+                            <td><input type="text" value="liumou" name="用户id" /></td>
+                          </tr>
+                          <tr>
+                            <td>密码：</td>
+                            <td><input type="password" value="123456" name = "密码"/></td>
+                          </tr>
+                          <tr>
+                            <td>真实姓名：</td>
+                            <td><input type="text" value="刘某" name = "姓名"/></td>
+                          </tr>
+                          <tr>
+                            <td>学院：</td>
+                            <td><input type="text" value="软件学院" name = "学院"/></td>
+                          </tr>
+                          <tr>
+                            <td>Email: </td>
+                            <td><input type="text" value="liumou@bit.edu.cn" name = "Email"/></td>
+                          </tr>
+                          <tr>
+                            <td>电话：</td>
+                            <td><input type="text" value="15201613615" name = "电话"/></td>
+                          </tr>
+                          <tr>
+                            <td>擅长领域：</td>
+                            <td><input type="text" value="数据挖掘，网络管理" name = "擅长领域"/></td>
+                          </tr>
+                        </tbody>
+                    </table>
+                    <a class="btn btn-primary" onclick="document.getElementById('form-id').submit();">添加</a>
+                    <a href="#" class="btn btn-primary">重置</a>
+                </form>
                 </div>
               </div>
             </div>

@@ -104,7 +104,7 @@
                                     <a href="user_list.php"> 用户列表</a>
                                 </li>
                                 <li>
-                                    <a href="add_user.php"> 添加用户</a>
+                                    <a href="add_user/admin.php"> 添加用户</a>
                                 </li>
                             </ul>
                             <!-- /.nav-second-level -->

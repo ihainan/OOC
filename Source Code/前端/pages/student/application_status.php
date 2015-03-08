@@ -35,7 +35,6 @@
 <body>
 
     <div id="wrapper">
-
         <!-- Navigation -->
         <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
             <div class="navbar-header">
@@ -45,7 +44,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="index.html">研究生论文盲审系统</a>
+                <a class="navbar-brand" href="index.php">研究生论文盲审系统</a>
             </div>
             <!-- /.navbar-header -->
 
@@ -56,16 +55,16 @@
                     <ul class="nav" id="side-menu">
                         
                         <li>
-                            <a href="index.html"><i class="fa fa-dashboard fa-fw"></i> 概要</a>
+                            <a href="index.php"><i class="fa fa-dashboard fa-fw"></i> 概要</a>
                         </li>
                         <li>
                             <a href="#"><i class="fa fa-file-text-o fa-fw"></i> 审核申请<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
-                                    <a href="application_form.html"> 填写申请</a>
+                                    <a href="application_form.php"> 填写申请</a>
                                 </li>
                                 <li>
-                                    <a href="application_status.html"> 审核状态</a>
+                                    <a href="application_status.php"> 审核状态</a>
                                 </li>
                             </ul>
                             <!-- /.nav-second-level -->
@@ -74,19 +73,19 @@
                             <a href="#"><i class="fa fa-file-text-o fa-fw"></i> 论文评审<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
-                                    <a href="upload_paper.html"> 上传论文</a>
+                                    <a href="upload_paper.php"> 上传论文</a>
                                 </li>
                                 <li>
-                                    <a href="add_modify.html"> 提交修改说明</a>
+                                    <a href="add_modify.php"> 提交修改说明</a>
                                 </li>
                                 <li>
-                                    <a href="review_status.html"> 评审结果</a>
+                                    <a href="review_status.php"> 评审结果</a>
                                 </li>
                             </ul>
                             <!-- /.nav-second-level -->
                         </li>
                         <li>
-                            <a href="profile.html"><i class="fa fa-user fa-fw"></i> 个人资料</a>
+                            <a href="profile.php"><i class="fa fa-user fa-fw"></i> 个人资料</a>
                         </li>
                         <li>
                             <a href="javascript:winconfirm()"><i class="fa fa-sign-out fa-fw"></i> 登出系统</a>
