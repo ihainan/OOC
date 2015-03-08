@@ -1,3 +1,65 @@
+<?php
+    // print_r($_COOKIE);
+    if(strcmp($_COOKIE["role"],"学生")){
+       header("refresh:3;url=../login.php");
+       echo "无权限浏览此页，3秒后跳转...";
+       exit();
+      }
+
+    // 开启错误提示
+    error_reporting(E_ALL);
+    ini_set('display_errors', 'On');
+
+    // 引用文件
+    require_once("../../phpLibrary/users.php");
+    require_once("../../phpLibrary/review_class.php");
+    require_once("../../phpLibrary/message_class.php");
+    require_once("../../phpLibrary/notorm-master/NotORM.php");
+
+    // 初始化数据库
+    $pdo = new PDO('mysql:host=lab.ihainan.me;dbname=blind_review_db','ss','123456');
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $pdo->exec('set names utf8');
+    $db = new NotORM($pdo);
+
+  
+    // 初始化 Review 类
+    $review = new Review($db);
+    
+    // 上传文件
+    if(isset($_POST["submit"])){
+        if(!isset($_POST["关键字"]) || $_POST["关键字"] == ""){
+            $message = "请填写关键字！";
+            echo "<script type='text/javascript'>alert('$message');</script>";
+        }
+        else{
+            // 上传文件
+            $target_dir = "../uploads/";
+            $target_file = $target_dir . $_COOKIE["username"] . "_". date("Y") . ".docx";
+
+            $isFileExist = false;
+            if(file_exists($target_file)){
+                $isFileExist = true;
+            }
+
+            // echo $target_file;
+            if(move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)){
+                
+                // 在首次上传文件后，更新数据库
+                if($isFileExist == false){
+                    $review -> addPaper($_COOKIE["username"], $_POST["关键字"]);
+                }
+
+                // 弹窗提示
+                $message = "上传文件成功！";
+                echo "<script type='text/javascript'>alert('$message');</script>";
+
+            }
+        }
+    }
+    
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -109,18 +171,19 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="panel panel-default">
-                        <div class="panel-heading">
-
-                        </div>
                         <div class="panel-body">
                             <div class="row">
                                 <div class="col-lg-6">
-                                    <form role="form">
+                                    <form role="form" action="#" method="post" enctype="multipart/form-data">
+                                        <div class="form-group">
+                                            <label>论文关键字：</label>
+                                            <input class="form-control" value="" name = "关键字">
+                                        </div>
                                         <div class="form-group">
                                             <label>上传论文：</label>
-                                            <input type="file">
+                                            <input type="file" id="fileToUpload" name = "fileToUpload">
                                         </div>
-                                        <button type="submit" class="btn btn-default">上传</button>
+                                        <button type="submit" class="btn btn-default" name = "submit">上传</button>
                                     </form>
                                 </div>
                                
