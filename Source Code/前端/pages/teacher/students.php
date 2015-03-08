@@ -1,4 +1,29 @@
-<!DOCTYPE html>
+<?php
+    // print_r($_COOKIE);
+    if(strcmp($_COOKIE["role"],"导师")){
+       header("refresh:3;url=../login.php");
+       echo "无权限浏览此页，3秒后跳转...";
+       exit();
+    }
+
+    // 开启错误提示
+    error_reporting(E_ALL);
+    ini_set('display_errors', 'On');
+
+    // 引用文件
+    require_once("../../phpLibrary/studentInfo.php");
+    require_once("../../phpLibrary/notorm-master/NotORM.php");
+
+    // 初始化数据库
+    $pdo = new PDO('mysql:host=lab.ihainan.me;dbname=blind_review_db','ss','123456');
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $pdo->exec('set names utf8');
+    $db = new NotORM($pdo);
+
+    $studentinfo = new studentInfo($db);
+    $arry = $studentinfo->getStudentInfo($_COOKIE["username"]);
+    //print_r($arry);
+?>
 <html lang="en">
 
 <head>
@@ -112,19 +137,26 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-
-                                        <tr class="even gradeC">
-                                            <td>符积高</td>
-                                            <td class="center">2220140550</td>
-                                            <td class="center">待填写导师意见（<a href="application_status.php">查看详情</a>）</td>
-                                            <td>暂未更新</td>
-                                        </tr>
-                                        <tr class="odd gradeA">
-                                            <td>陈凯</td>
-                                            <td class="center">2220140551</td>
-                                            <td class="center">已审核（<a href="application_status.php">查看详情</a>）</td>
-                                            <td>论文已上传（<a href="#">查看详情</a>）</td>
-                                        </tr>
+                                    <?php
+                                    $i = 0;
+                                    foreach ($arry as $key => $value) {
+                                        if($i%2){//奇数行
+                                        echo "<tr class="."even gradeC".">";
+                                        }else{//偶数行
+                                        echo "<tr class="."odd gradeA".">";
+                                        }
+                                        echo "<td>".$value["姓名"]."</td>";
+                                        echo "<td class="."center".">".$value["学号"]."</td>";
+                                        echo "<td class="."center".">".$value["申请表"]."（<a href="."application_status.php".">查看详情</a>）</td>";
+                                        if($value["论文审核"] == "暂未更新")
+                                            echo "<td>暂未更新</td>";
+                                        else if($value["论文审核"] == "论文已上传"){
+                                            $link = "../uploads/".$value["学号"]."_".date("Y").".docx";
+                                            echo "<td class="."center".">论文已上传（<a href=".$link.">查看详情</a>）</td>";
+                                        }
+                                        echo "</tr>";
+                                    }
+                                    ?>
                                     </tbody>
                                 </table>
                             </div>
