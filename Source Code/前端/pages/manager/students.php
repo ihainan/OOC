@@ -52,7 +52,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="index.html">研究生论文盲审系统</a>
+                <a class="navbar-brand" href="index.php">研究生论文盲审系统</a>
             </div>
             <!-- /.navbar-header -->
 
@@ -63,13 +63,13 @@
                     <ul class="nav" id="side-menu">
                         
                         <li>
-                            <a href="index.html"><i class="fa fa-dashboard fa-fw"></i> 概要</a>
+                            <a href="index.php"><i class="fa fa-dashboard fa-fw"></i> 概要</a>
                         </li>
                         <li>
-                            <a href="students.html"><i class="fa fa-users fa-fw"></i> 学生列表</a>
+                            <a href="students.php"><i class="fa fa-users fa-fw"></i> 学生列表</a>
                         </li>
                         <li>
-                            <a href="profile.html"><i class="fa fa-user fa-fw"></i> 个人资料</a>
+                            <a href="profile.php"><i class="fa fa-user fa-fw"></i> 个人资料</a>
                         </li>
                         <li>
                             <a href="javascript:winconfirm()"><i class="fa fa-sign-out fa-fw"></i> 登出系统</a>
@@ -118,8 +118,8 @@
                                         <tr class="even gradeC">
                                             <td>符积高</td>
                                             <td class="center">2220140550</td>
-                                            <td class="center">导师已提交（<a href="application_status.html">查看详情</a>）</td>
-                                            <td class="center">已上传（<a href="application_status.html">下载</a>）</td>
+                                            <td class="center">导师已提交（<a href="application_status.php">查看详情</a>）</td>
+                                            <td class="center">已上传（<a href="application_status.php">下载</a>）</td>
                                             <td>
                                                 <select class="form-contrl">
                                                     <option>未设置</option>
@@ -128,15 +128,15 @@
                                                     <option>低于 25%,绪论及文献综述部分重合率高</option>
                                                 </select>
                                             </td>
-                                            <td>已填写（<a href="application_status.html">修改</a>）</td>
-                                            <td>未填写（<a href="application_status.html">填写</a>）</td>
+                                            <td>已填写（<a href="application_status.php">修改</a>）</td>
+                                            <td>未填写（<a href="application_status.php">填写</a>）</td>
                                             <td>待定</td>
                                         </tr>
                                             <tr class="even gradeC">
                                             <td>陈凯</td>
                                             <td class="center">2220140551</td>
-                                            <td class="center">导师已提交（<a href="application_status.html">查看详情</a>）</td>
-                                            <td class="center">已上传（<a href="application_status.html">下载</a>）</td>
+                                            <td class="center">导师已提交（<a href="application_status.php">查看详情</a>）</td>
+                                            <td class="center">已上传（<a href="application_status.php">下载</a>）</td>
                                             <td>
                                                 <select class="form-contrl">
                                                     <option>未设置</option>
@@ -145,8 +145,8 @@
                                                     <option>低于 25%,绪论及文献综述部分重合率高</option>
                                                 </select>
                                             </td>
-                                            <td>未填写（<a href="application_status.html">填写</a>）</td>
-                                            <td>未填写（<a href="application_status.html">填写</a>）</td>
+                                            <td>未填写（<a href="application_status.php">填写</a>）</td>
+                                            <td>未填写（<a href="application_status.php">填写</a>）</td>
                                             <td>待定</td>
                                         </tr>
                                     </tbody>
