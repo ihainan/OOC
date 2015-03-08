@@ -47,7 +47,7 @@
 
     <div id="wrapper">
 
-       <!-- Navigation -->
+        <!-- Navigation -->
         <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -70,13 +70,28 @@
                             <a href="index.php"><i class="fa fa-dashboard fa-fw"></i> 概要</a>
                         </li>
                         <li>
-                            <a href="#"><i class="fa fa-users fa-fw"></i> 用户管理<span class="fa arrow"></span></a>
+                            <a href="#"><i class="fa fa-file-text-o fa-fw"></i> 审核申请<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
-                                    <a href="user_list.php"> 用户列表</a>
+                                    <a href="application_form.php"> 填写申请</a>
                                 </li>
                                 <li>
-                                    <a href="add_user.php"> 添加用户</a>
+                                    <a href="application_status.php"> 审核状态</a>
+                                </li>
+                            </ul>
+                            <!-- /.nav-second-level -->
+                        </li>
+                         <li>
+                            <a href="#"><i class="fa fa-file-text-o fa-fw"></i> 论文评审<span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li>
+                                    <a href="upload_paper.php"> 上传论文</a>
+                                </li>
+                                <li>
+                                    <a href="add_modify.php"> 提交修改说明</a>
+                                </li>
+                                <li>
+                                    <a href="review_status.php"> 评审结果</a>
                                 </li>
                             </ul>
                             <!-- /.nav-second-level -->
