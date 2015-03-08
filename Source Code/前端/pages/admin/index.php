@@ -40,7 +40,7 @@
     $message = new Message($db);
 
     // 获取用户收到的消息
-    $userMessages = $message -> getUserMessage("2220140550");
+    $userMessages = $message -> getUserMessage($_COOKIE["username"]);
 ?>
 <html lang="en">
 
@@ -278,7 +278,7 @@
                         <!-- /.panel-body -->
                     </div>
 
-
+                    
                     <!-- /.panel -->
                 </div>
                 <!-- /.col-lg-8 -->
@@ -300,7 +300,7 @@
                                 ?>
                                     <a href="#" class="list-group-item">
                                         <i class="fa fa-comment fa-fw"></i> <?php echo $userMessage["消息标题"];?>
-                                        <span class="pull-right text-muted small"><em>4 分钟前</em>
+                                        <span class="pull-right text-muted small"><em><?php echo $userMessage["time"];?></em>
                                         </span>
                                     </a>
                                 <?php
