@@ -112,8 +112,8 @@
 
 		/**
 		// 函数: getManagerInfo.php($id)
-		// 功能：获取指定导师信息
-		// 返回：包含该导师的数组
+		// 功能：获取指定管理人员信息
+		// 返回：包含该管理人员信息的数组
 		**/
 		public function getManagerInfo($userID){
 			$users = $this -> db -> 系统用户() -> where("用户id", $userID);
@@ -154,13 +154,47 @@
 		}
 
 
-		// 添加管理员角色用户
+		/**
+		// 函数: addAdminUser($userBasicInfo)
+		// 功能：添加管理员角色用户
+		// 返回：无
+		**/
+		public function addAdminUser($userBasicInfo){
+			$result = $this -> db -> 系统用户() -> insert($userBasicInfo);
+			// $result = $this -> db -> 系统管理员表() -> insert($externInfo);
+			return $result;
+		}
 
-		// 添加研究生角色用户
+		/**
+		// 函数: addStudentUser($userBasicInfo, $externInfo)
+		// 功能：添加学生角色用户
+		// 返回：无
+		**/
+		public function addStudentUser($userBasicInfo, $externInfo){
+			$result = $this -> db -> 系统用户() -> insert($userBasicInfo);
+			$result2 = $this -> db -> 学生表() -> insert($externInfo);
+			return array("result" => $result, "result2" => $result2);
+		}
 
-		// 添加导师角色用户
+		/**
+		// 函数: addTeacherUser($userBasicInfo, $externInfo)
+		// 功能：添加导师角色用户
+		// 返回：无
+		**/
+		public function addTeacherUser($userBasicInfo, $externInfo){
+			$result = $this -> db -> 系统用户() -> insert($userBasicInfo);
+			$result = $this -> db -> 导师表() -> insert($externInfo);
+		}
 
-		// 添加学院管理人员角色用户
+		/**
+		// 函数: addManagerUser($userBasicInfo, $externInfo)
+		// 功能：添加学院管理人员角色用户
+		// 返回：无
+		**/
+		public function addManagerUser($userBasicInfo, $externInfo){
+			$result = $this -> db -> 系统用户() -> insert($userBasicInfo);
+			$result = $this -> db -> 学院管理人员表() -> insert($externInfo);
+		}
 
 		// 更新管理员角色用户
 
