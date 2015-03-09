@@ -48,16 +48,20 @@
 			if(sizeof($applicationForms) > 0){		
 				$isStudentSubmitted = true;		
 		
-				// 检查导师是否已经提交		
-				$applicationForm = $applicationForms[0];
-		
-				if(isset($applicationForm["导师意见"])){		
+				// 检查导师是否已经提交	
+				foreach ($applicationForms as $item) {
+					$applicationForm = $item;
+					break;
+				}
+				// $applicationForm = $applicationForms[0];
+				// print_r($applicationForm) ;
+				if(isset($applicationForm["导师意见"])){	
 					$isTeacherSubmitted = true;		
 					if(isset($applicationForm["学院意见"])){		
 						$isSchoolSubmitted = true;		
 						if(isset($applicationForm["审核状态"]) && $applicationForm["审核状态"] == "通过"){		
 							$isAccedpted = true;		
-						}		
+						}
 					}		
 				}		
 			}		
