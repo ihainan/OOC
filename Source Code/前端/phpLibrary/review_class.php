@@ -89,17 +89,17 @@
 			/* 直接分配给两位导师(记得修改) */
 
 			//获取论文关键字
-			$paperInfo = $this -> $db -> 论文表() -> where("学生id",$userid);
+			$paperInfo = $this -> db -> 论文表() -> where("学生id",$userid);
 			$keywords = $paperInfo["关键字"];
 			//将论文关键字分割成数组
 			$keyword = explode(',', $keywords);
 
 			//获取该学生的导师
-			$studentInfo = $this -> $db -> 学生表() -> where("学生id",$userid);
+			$studentInfo = $this -> db -> 学生表() -> where("学生id",$userid);
 			$teacher = $studentInfo["导师id"];
 
 			//获取所有导师
-			$teacherInfo = $this -> $db -> 导师表() -> select("导师id","擅长领域");
+			$teacherInfo = $this -> db -> 导师表() -> select("导师id","擅长领域");
 			foreach ($keyword as $value) {
 				foreach ($teacherInfo as $r) {
 					if (!strcmp($r["导师id"], $teacher)) {
