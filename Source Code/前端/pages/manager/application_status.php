@@ -31,7 +31,7 @@
                 "审核状态" => $_POST["optionsRadiosInline"],
                 "学院意见" => $_POST["schoolReview"]);
 
-            $records = $application->where("学生id",$_GET["userId"]);
+            $records = $application->where("学生id",$_GET["userid"]);
             $result = $records->update($data);
         }
     }
@@ -40,7 +40,7 @@
     $apply_status = $app -> getApplicationStatusText($userId);
     
     //获取该学生提交的评审申请
-    $stu_apply = $application->where("学生id",$_GET["userId"])->order("id DESC")->limit(1,0);
+    $stu_apply = $application->where("学生id",$_GET["userid"])->order("id DESC")->limit(1,0);
     //echo $stu_apply;
     $last_apply = $stu_apply->fetch();
     //print_r($last_apply);
@@ -143,7 +143,7 @@
                         <div class="panel-body">
                             <div class="row">
                                 <div class="col-lg-6">
-                                    <form role="form" action="application_status.php?action=review&userId=<?php echo $userId; ?>" method="post">
+                                    <form role="form" action="application_status.php?action=review&userid=<?php echo $userId; ?>" method="post">
                                         <div class="form-group">
                                             <label>论文题目：</label>
                                             <input class="form-control" value="《一个非常屌的论文题目》" disabled>
@@ -203,6 +203,14 @@
 
     <!-- Custom Theme JavaScript -->
     <script src="../../dist/js/sb-admin-2.js"></script>
+    <script>
+        function winconfirm(){
+            question = confirm("确定登出本系统？")
+            if (question != "0"){
+             window.location = "../logout.php"
+            }
+        }
+    </script>
 
 </body>
 
