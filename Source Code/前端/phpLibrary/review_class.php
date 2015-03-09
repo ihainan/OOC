@@ -82,13 +82,46 @@
 			// 获取审核信息表 ID
 			$result = $this -> getReviewResult($userid);
 			$id = $result["id"];
+			$count = 0;
+			$teachers = array();
 
 			// 获取学生论文的关键字
 			// 寻找最合适的两位导师，存在数组 teachers，得到其 ID 号
 			/* 直接分配给两位导师(记得修改) */
+
+			//获取论文关键字
+			$paperInfo = $this -> $db -> 论文表() -> where("学生id",$userid);
+			$keywords = $paperInfo["关键字"];
+			//将论文关键字分割成数组
+			$keyword = explode(',', $keywords);
+
+			//获取该学生的导师
+			$studentInfo = $this -> $db -> 学生表() -> where("学生id",$userid);
+			$teacher = $studentInfo["导师id"];
+
+			//获取所有导师
+			$teacherInfo = $this -> $db -> 导师表() -> select("导师id","擅长领域");
+			foreach ($keyword as $value) {
+				foreach ($teacherInfo as $r) {
+					if (!strcmp($r["导师id"], $teacher)) {
+						$con = explode($value, $r["擅长领域"]);
+						if (count($con) > 1) {
+							$teachers[$count] = $r["导师id"];
+							$count ++;
+						}
+					}
+					if ($count == 2) {
+						break;
+					}
+				}
+				if ($count == 2) {
+					break;
+				}
+			}
+
 			$data = array(
-				"评审专家一id" => "lilaoshi",
-				"评审专家二id" => "liulaoshi");
+				"评审专家一id" => $teachers[0],
+				"评审专家二id" => $teachers[1]);
 			$data_r = array(
 				"评审人id" => $data["评审专家一id"],
 				"评审信息类id" => $id);
