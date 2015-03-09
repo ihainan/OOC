@@ -25,7 +25,7 @@
     $users = new Users($db);
     $application = new Application($db);
     $apply_status = $application -> getApplicationStatusText($_COOKIE["username"]);
-    print_r($application -> getApplicationStatus($_COOKIE["username"]));
+    //print_r($application -> getApplicationStatus($_COOKIE["username"]));
     $studentInfo = $users->getStudentInfo($_COOKIE["username"]);
     //print_r($studentInfo);
     $application = $db->评审申请();
@@ -33,9 +33,12 @@
     $stu_apply = $application->where("学生id",$_COOKIE["username"])->order("id DESC")->limit(1,0);
     //echo $stu_apply;
     $last_apply = $stu_apply->fetch();
-    //$flag;
-    if($last_apply["开放审核申请id"] == $db->开放审核申请()->max("id")){
+    print_r($last_apply);
+    /*if($last_apply["开放审核申请id"] == $db->开放审核申请()->max("id")){
        $flag = $last_apply["审核状态"];
+    }*/
+    if($apply_status != "学生未提交"){
+        $flag = true;
     }
 ?>
 <html lang="en">
@@ -159,7 +162,7 @@
                                             <label>论文题目：</label>
                                             <input class="form-control" value="
                                             <?php 
-                                                if(!empty($flag)){
+                                                if($flag){
                                                 echo $last_apply["论文题目"];
                                                 }
                                             ?>" 
@@ -169,7 +172,7 @@
                                             <label>论文摘要：</label>
                                             <textarea class="form-control" rows="5" disabled>
                                             <?php 
-                                                if(!empty($flag)){
+                                                if($flag){
                                                 echo $last_apply["论文摘要"];
                                                 }
                                             ?></textarea> 
@@ -178,7 +181,7 @@
                                             <label>导师意见：</label>
                                             <textarea class="form-control" rows="5" disabled>
                                              <?php 
-                                                if(!empty($flag)){
+                                                if($flag){
                                                 echo $last_apply["导师意见"];
                                                 }
                                             ?></textarea>
@@ -187,7 +190,7 @@
                                             <label>学院意见：</label>
                                             <textarea class="form-control" rows="5" disabled>
                                             <?php 
-                                                if(!empty($flag)){
+                                                if($flag){
                                                 echo $last_apply["学院意见"];
                                                 }
                                             ?></textarea>

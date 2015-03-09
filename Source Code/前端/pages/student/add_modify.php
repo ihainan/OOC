@@ -38,6 +38,7 @@
                 //上传文件成功后更新数据库，向“修改说明类”中插入新行
                 $modify_table = $db->修改说明类();
                 $modifies = $modify_table->where("论文id",$_COOKIE["username"]);
+                $message = "上传文件成功！";
                 if(sizeof($modify_table) > 0){//存在，更新
                     $data = array(
                     "修改说明" => $_POST["modify_text"]);
@@ -48,10 +49,10 @@
                     "修改说明" => $_POST["modify_text"]);
                     //print_r($data);
                     $result = $modify_table->insert($data);
+                    if($result != false){
+                        $message = "上传文件成功！";
+                    }else $message = "文件上传失败！";
                 }
-                if($result){
-                    $message = "上传文件成功！";
-                }else $message = "文件上传失败！";
                  // 弹窗提示
                 echo "<script type='text/javascript'>alert('$message');</script>";
 
