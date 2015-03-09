@@ -22,7 +22,7 @@
 
     $studentinfo = new studentInfo($db);
     $arry = $studentinfo->getStudentInfo($_COOKIE["username"]);
-    print_r($arry);
+    //print_r($arry);
 ?>
 <html lang="en">
 

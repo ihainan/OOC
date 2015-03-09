@@ -12,6 +12,7 @@
     // 引用文件
     require_once("../../phpLibrary/users.php");
     require_once("../../phpLibrary/notorm-master/NotORM.php");
+    require_once("../../phpLibrary/application.php");
 
     // 初始化数据库
     $pdo = new PDO('mysql:host=lab.ihainan.me;dbname=blind_review_db','ss','123456');
@@ -23,29 +24,31 @@
 
     $studentInfo = $users->getStudentInfo($_COOKIE["username"]);
     //print_r($studentInfo);
-    $application = $db->评审申请();
+    $apply = $db->评审申请();
     
     if($_GET["action"] == "application"){//判断用户是否执行提交操作
         if(!empty($_POST)){
             //print_r($_POST);
             $data = array(
             "学生id" => $studentInfo["用户id"],
-            "审核状态" => "待导师意见",
             "开放审核申请id" => $db->开放审核申请()->max("id"),
             "论文摘要" => $_POST["abstract"],
             "论文题目" => $_POST["paper_tile"],
             "申请理由" => $_POST["reason"]);
-            $result = $application->insert($data);
+            $result = $apply->insert($data);
         }
     }
-    //获取该学生提交的评审申请
+    $application = new Application($db);
+    $flag = $application->getApplicationStatusText($studentInfo["用户id"]);
+    echo $flag;
+    /*//获取该学生提交的评审申请
     $stu_apply = $application->where("学生id",$_COOKIE["username"])->order("id DESC")->limit(1,0);
     //echo $stu_apply;
     $last_apply = $stu_apply->fetch();
     //$flag;
     if($last_apply["开放审核申请id"] == $db->开放审核申请()->max("id")){
        $flag = "状态：".$last_apply["审核状态"];
-    }
+    }*/
 ?>
 <html lang="en">
 
@@ -149,7 +152,7 @@
         <div id="page-wrapper">
             <div class="row">
                 <div class="col-lg-12">
-                    <h1 class="page-header">填写申请 <?php if(!empty($flag)){ echo "　".$flag;}?>
+                    <h1 class="page-header">填写申请 <?php  echo "　".$flag;?>
                     </h1>
                 </div>
                 <!-- /.col-lg-12 -->
@@ -191,20 +194,20 @@
                                         </div>
                                         <div class="form-group">
                                             <label>论文题目：</label>
-                                            <input name="paper_tile" class="form-control" value="《一个非常屌的论文题目》" <?php if(!empty($flag)){ echo "disabled";}?>>
+                                            <input name="paper_tile" class="form-control" value="《一个非常屌的论文题目》" <?php if($flag != "学生未提交"){ echo "disabled";}?>>
                                         </div>
                                         <div class="form-group">
                                             <label>论文摘要：</label>
-                                            <textarea name="abstract" class="form-control" rows="5" <?php if(!empty($flag)){ echo "disabled";}?>
+                                            <textarea name="abstract" class="form-control" rows="5" <?php if($flag != "学生未提交"){ echo "disabled";}?>
                                             >一个非常屌的论文摘要</textarea> 
                                         </div>
                                         <div class="form-group">
                                             <label>申请理由：</label>
-                                            <textarea name="reason" class="form-control" rows="5" <?php if(!empty($flag)){ echo "disabled";}?>
+                                            <textarea name="reason" class="form-control" rows="5" <?php if($flag != "学生未提交"){ echo "disabled";}?>
                                             >我已获得软件工程硕士培养计划中规定的全部学分,并完成了学位论文的 撰写工作。现申请进行学位论文评审,请审批。</textarea>
                                         </div>
-                                        <button type="submit" class="btn btn-default" <?php if(!empty($flag)){ echo "disabled";}?>>提交</button>
-                                        <button type="reset" class="btn btn-default" <?php if(!empty($flag)){ echo "disabled";}?>>重置</button>
+                                        <button type="submit" class="btn btn-default" <?php if($flag != "学生未提交"){ echo "disabled";}?>>提交</button>
+                                        <button type="reset" class="btn btn-default" <?php if($flag != "学生未提交"){ echo "disabled";}?>>重置</button>
                                     </form>
                                 </div>
                                

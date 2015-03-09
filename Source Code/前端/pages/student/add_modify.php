@@ -46,7 +46,7 @@
                     $data = array(
                     "论文id" => $_COOKIE["username"],
                     "修改说明" => $_POST["modify_text"]);
-                    print_r($data);
+                    //print_r($data);
                     $result = $modify_table->insert($data);
                 }
                 if($result){

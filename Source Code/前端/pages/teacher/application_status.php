@@ -36,7 +36,7 @@
     $stu_apply = $application->where("学生id",$_GET["userId"])->order("id DESC")->limit(1,0);
     //echo $stu_apply;
     $last_apply = $stu_apply->fetch();
-    print_r($last_apply);
+    //print_r($last_apply);
 ?>
 
 <!DOCTYPE html>
@@ -183,6 +183,14 @@
 
     <!-- Custom Theme JavaScript -->
     <script src="../../dist/js/sb-admin-2.js"></script>
+    <script>
+        function winconfirm(){
+            question = confirm("确定登出本系统？")
+            if (question != "0"){
+             window.location = "../logout.php"
+            }
+        }
+    </script>
 
 </body>
 

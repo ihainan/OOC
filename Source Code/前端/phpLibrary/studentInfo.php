@@ -1,5 +1,6 @@
 <?php
 	require_once("notorm-master/NotORM.php");
+	require_once("application.php");
 	class studentInfo{
 		private $db;
 		/** 
@@ -34,7 +35,8 @@
    				$last_apply = $stu_apply->fetch();
    				//获取最近的申请状态
    				if($last_apply["开放审核申请id"] == $this->db->开放审核申请()->max("id")){
-       				$statu_apply = $last_apply["审核状态"];
+   				 	$application = new Application($this->db);
+    				$statu_apply = $application->getApplicationStatusText($studentId["学生id"]);
     			}else{
     				$statu_apply = "未提交";
     			}

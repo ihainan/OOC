@@ -162,9 +162,9 @@
     </script>
     <script>
         function winconfirm(){
-            question = confirm("确定删除所选用户？")
+            question = confirm("确定登出本系统？")
             if (question != "0"){
-                alert("该功能尚未开发完毕。");
+             window.location = "../logout.php"
             }
         }
     </script>
