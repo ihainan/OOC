@@ -1,4 +1,64 @@
-<!DOCTYPE html>
+<?php
+    // print_r($_COOKIE);
+    if(strcmp($_COOKIE["role"],"学生")){
+       header("refresh:3;url=../login.php");
+       echo "无权限浏览此页，3秒后跳转...";
+       exit();
+      }
+
+    // 开启错误提示
+    error_reporting(E_ALL);
+    ini_set('display_errors', 'On');
+
+    // 引用文件
+    require_once("../../phpLibrary/users.php");
+    require_once("../../phpLibrary/notorm-master/NotORM.php");
+
+    // 初始化数据库
+    $pdo = new PDO('mysql:host=lab.ihainan.me;dbname=blind_review_db','ss','123456');
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $pdo->exec('set names utf8');
+    $db = new NotORM($pdo);
+
+    $users = new Users($db);
+    $studentInfo = $users->getStudentInfo($_COOKIE["username"]);
+    
+    //获取该学生提交的评审申请
+    $last_apply = $db->评审申请()->where("学生id",$_COOKIE["username"])->order("id DESC")->limit(1,0)->fetch();
+    // 上传文件
+    if(isset($_POST["submit"])){
+        
+       
+            // 上传文件
+            $target_dir = "../uploads/";
+            $target_file = $target_dir . $_COOKIE["username"] . "_". date("Y") . ".docx";
+
+            //echo $target_file;
+            if(move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)){
+                //上传文件成功后更新数据库，向“修改说明类”中插入新行
+                $modify_table = $db->修改说明类();
+                $modifies = $modify_table->where("论文id",$_COOKIE["username"]);
+                if(sizeof($modify_table) > 0){//存在，更新
+                    $data = array(
+                    "修改说明" => $_POST["modify_text"]);
+                    $result = $modifies->update($data);
+                }else {
+                    $data = array(
+                    "论文id" => $_COOKIE["username"],
+                    "修改说明" => $_POST["modify_text"]);
+                    print_r($data);
+                    $result = $modify_table->insert($data);
+                }
+                if($result){
+                    $message = "上传文件成功！";
+                }else $message = "文件上传失败！";
+                 // 弹窗提示
+                echo "<script type='text/javascript'>alert('$message');</script>";
+
+            }
+    }
+    
+?>
 <html lang="en">
 
 <head>
@@ -115,28 +175,28 @@
                         <div class="panel-body">
                             <div class="row">
                                 <div class="col-lg-6">
-                                    <form role="form">
+                                     <form role="form" action="#" method="post" enctype="multipart/form-data">
                                         <div class="form-group">
                                             <label>学号：</label>
-                                            <input class="form-control" value="2220140550" disabled>
+                                            <input class="form-control" value="<?php echo $studentInfo["用户id"]?>" disabled>
                                         </div>
                                         <div class="form-group">
                                             <label>姓名：</label>
-                                            <input class="form-control" value="符积高" disabled>
+                                            <input class="form-control" value="<?php echo $studentInfo["姓名"]?>" disabled>
                                         </div>
                                         <div class="form-group">
                                             <label>论文题目：</label>
-                                            <input class="form-control" value="《一个非常屌的论文题目》">
+                                            <input class="form-control" value="<?php echo $last_apply["论文题目"]?>" disabled>
                                         </div>
                                         <div class="form-group">
                                             <label>修改说明：</label>
-                                            <textarea class="form-control" rows="5">我错了以后一定好好写论文！</textarea> 
+                                            <textarea name ="modify_text" class="form-control" rows="5">我错了以后一定好好写论文！</textarea> 
                                         </div>
                                         <div class="form-group">
                                             <label>上传论文：</label>
-                                            <input type="file">
+                                            <input type="file" id="fileToUpload" name = "fileToUpload">
                                         </div>
-                                        <button type="submit" class="btn btn-default">提交</button>
+                                        <button type="submit" name = "submit" class="btn btn-default">提交</button>
                                         <button type="reset" class="btn btn-default">重置</button>
                                     </form>
                                 </div>
