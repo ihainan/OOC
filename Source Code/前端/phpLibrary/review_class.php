@@ -218,9 +218,21 @@
 		/* 返回： */
 		public function updateExperOnetModifyReview($userid, $reviewContent){
 			// 检查评审信息表中的 “学院意见” 是否为不同意，是的话，直接返回
-			// 否则，若 $reviewContent 为不通过，则直接更新评审信息表中的 “学院意见” 为不同意
+			$result = $this -> getReviewResult($userid);
+			if($result["学院意见"] == "拒绝")
+				return;
+			// 否则，若 $reviewContent 为不通过，则直接更新评审信息表中的 “学院意见” 为拒绝
+			if($reviewContent == "不通过"){
+				$mData = array("学院意见" => "拒绝");
+				$result -> update($mData	);
+			}
 			// 否则，检查评审信息表中的 “修改说明” 是否为“专家二通过修改”，是的话，直接更新评审信息表中的 “学院意见” 为同意
+			if($result["修改说明"] == "专家二通过修改"){
+				$mData = array("学院意见" => "拒绝");
+				$result -> update($mData);
+			}
 			// 否则，修改评审信息表中的 “修改说明” 是否为“专家一通过修改”
+			
 		}
 
 
