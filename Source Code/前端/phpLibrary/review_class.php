@@ -273,7 +273,7 @@
 
 		/**
 		// 函数: getModifications($teacherid)
-		// 功能：获取特定学生的修改说明
+		// 功能：获取导师所有需要审核的修改说明
 		// 返回：无
 		 **/
 		public function getModifications($teacherid){
@@ -285,7 +285,7 @@
 				$inf = $this -> db -> 评审信息类() -> where("id", $rev["评审信息类id"]) -> fetch();
 
 				// 判断自己是专家一还是专家
-				echo $teacherid;
+				// echo $teacherid;
 				if($inf["评审专家一id"] == $teacherid){
 					$expertNo = 1;
 					$modification["专家编号"] = 1;
@@ -320,6 +320,39 @@
 			}
 			return $modifications;
 		}
+
+		/**
+		// 函数: getReviewPapers($teacherid)
+		// 功能：获取导师所有需要审核的论文
+		// 返回：无
+		 **/
+		public function getReviewPapers($teacherid){
+			$reviewPapers = array();
+			// 根据导师 id 从论文评阅书中获取所有的评审信息类 id
+			$revs = $this -> db -> 论文评阅书() -> where("评审人id", $teacherid);
+			foreach ($revs as $rev) {
+				// 根据评审信息类 id 获取对应的评审信息类
+				$inf = $this -> db -> 评审信息类() -> where("id", $rev["评审信息类id"]) -> fetch();
+
+				// 根据评审信息类 id 从论文表中获取论文内容（包含论文 id）
+				$paper = $this -> db -> 论文表() -> where("评审信息表id", $rev["评审信息类id"]) -> fetch();
+				$revPaper["论文编号"] = $paper["学生id"]."_".$paper["年份"];
+
+				// 根据学生 ID 从论文申请中获取论文标题
+				$application =  $this -> db -> 
+					评审申请() -> where("学生id", $paper["学生id"]) -> fetch();
+				$revPaper["论文题目"] = $application["论文题目"];
+				$revPaper["论文关键字"] = $paper["关键字"];
+
+				// 其他
+				$revPaper["下载链接"] = "../uploads/".$revPaper["论文编号"].".docx";
+
+				// print_r($reviewPapers);
+				array_push($reviewPapers, $revPaper);
+			}
+			return $reviewPapers;
+		}
+
 
 		public function getFirstItem($items){
 			foreach ($items as $item) {
