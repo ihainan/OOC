@@ -1,45 +1,45 @@
-<?php
-    // print_r($_COOKIE);
-    if(strcmp($_COOKIE["role"],"导师")){
-       header("refresh:3;url=../login.php");
-       echo "无权限浏览此页，3秒后跳转...";
-       exit();
-    }
+    <?php
+        // print_r($_COOKIE);
+        if(strcmp($_COOKIE["role"],"导师")){
+           header("refresh:3;url=../login.php");
+           echo "无权限浏览此页，3秒后跳转...";
+           exit();
+        }
 
-    // 开启错误提示
-    error_reporting(E_ALL);
-    ini_set('display_errors', 'On');
+        // 开启错误提示
+        error_reporting(E_ALL);
+        ini_set('display_errors', 'On');
 
-    // 引用文件
-    require_once("../../phpLibrary/users.php");
-    require_once("../../phpLibrary/message_class.php");
-    require_once("../../phpLibrary/notorm-master/NotORM.php");
-    require_once("../../phpLibrary/review_class.php");
-    require_once("../../phpLibrary/studentInfo.php");
+        // 引用文件
+        require_once("../../phpLibrary/users.php");
+        require_once("../../phpLibrary/message_class.php");
+        require_once("../../phpLibrary/notorm-master/NotORM.php");
+        require_once("../../phpLibrary/review_class.php");
+        require_once("../../phpLibrary/studentInfo.php");
 
-    // 初始化数据库
-    $pdo = new PDO('mysql:host=lab.ihainan.me;dbname=blind_review_db','ss','123456');
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $pdo->exec('set names utf8');
-    $db = new NotORM($pdo);
+        // 初始化数据库
+        $pdo = new PDO('mysql:host=lab.ihainan.me;dbname=blind_review_db','ss','123456');
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $pdo->exec('set names utf8');
+        $db = new NotORM($pdo);
 
-    $review = new Review($db);
-    $modifications = $review -> getModifications($_COOKIE["username"]);
+        $review = new Review($db);
+        $modifications = $review -> getModifications($_COOKIE["username"]);
 
-    // 更新学术不端检测结果
-    if(array_key_exists("修改审核结果", $_GET)
-        && array_key_exists("userId", $_GET)
-        && array_key_exists("expert", $_GET)){
-        if($_GET["修改审核结果"] != "未设置"){
-            if($_GET["expert"] == 1){
-                $review -> updateExperOnetModifyReview($_GET["userId"], $_GET["修改审核结果"]);
-            }
-            else{
-                $review -> updateExperTwotModifyReview($_GET["userId"], $_GET["修改审核结果"]);
+        // 更新学术不端检测结果
+        if(array_key_exists("修改审核结果", $_GET)
+            && array_key_exists("userId", $_GET)
+            && array_key_exists("expert", $_GET)){
+            if($_GET["修改审核结果"] != "未设置"){
+                if($_GET["expert"] == 1){
+                    $review -> updateExperOnetModifyReview($_GET["userId"], $_GET["修改审核结果"]);
+                }
+                else{
+                    $review -> updateExperTwotModifyReview($_GET["userId"], $_GET["修改审核结果"]);
+                }
             }
         }
-    }
-?>
+    ?>
 <!DOCTYPE html>
 <html lang="en">
 
