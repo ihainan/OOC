@@ -34,15 +34,17 @@
 
 	$message = new Message($db);
 	$message -> getUserMessage("2220140550");
-
-
-	$application = new Application($db);
-	$arr = $application -> getApplicationInfo("2220140537");
-	print_r($arr);
 	*/
-	// 初始化 Review 类
-    $review = new review($db);
-    $r = $review -> getReviewResult("2220140550");
-    echo $r["学生id"];
+	
+	$application = new Application($db);
+	$arr = $application -> getApplicationStatusText("2220140537");
+	print_r($arr);
+	
 
-?>
+	// 初始化 Review 类
+	
+    $review = new review($db);
+    $r = $review -> getModifications("lilaoshi");
+    print_r($r);
+    
+	?>
