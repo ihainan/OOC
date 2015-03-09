@@ -82,6 +82,7 @@
 			// 获取审核信息表 ID
 			$result = $this -> getReviewResult($userid);
 			$id = $result["id"];
+			echo "id=".$id;
 			$count = 0;
 			$teachers = array();
 
@@ -89,24 +90,32 @@
 			/* 直接分配给两位导师(记得修改) */
 
 			//获取论文关键字
-			$paperInfo = $this -> $db -> 论文表() -> where("学生id",$userid);
+			$paperInfo = $this -> db -> 论文表() -> where("学生id",$userid)->fetch();
 			$keywords = $paperInfo["关键字"];
 			//将论文关键字分割成数组
-			$keyword = explode(',', $keywords);
-
+			$keyword = explode('，', $keywords);
+			//print_r($keyword);
 			//获取该学生的导师
-			$studentInfo = $this -> $db -> 学生表() -> where("学生id",$userid);
+			$studentInfo = $this -> db -> 学生表() -> where("学生id",$userid)->fetch();
 			$teacher = $studentInfo["导师id"];
 
 			//获取所有导师
-			$teacherInfo = $this -> $db -> 导师表() -> select("导师id","擅长领域");
+			$teacherInfo = $this -> db -> 导师表();
+			//print_r($teacherInfo);
+			$teachers = array();
 			foreach ($keyword as $value) {
+			echo "h";
 				foreach ($teacherInfo as $r) {
-					if (!strcmp($r["导师id"], $teacher)) {
+				echo "H";
+				////print_r($r);
+					if (strcmp($r["导师id"], $teacher)) {
+					echo "D";
 						$con = explode($value, $r["擅长领域"]);
+						//print_r($con);
 						if (count($con) > 1) {
 							$teachers[$count] = $r["导师id"];
 							$count ++;
+							echo $r["导师id"];
 						}
 					}
 					if ($count == 2) {
@@ -117,7 +126,7 @@
 					break;
 				}
 			}
-
+			//print_r($teachers);
 			$data = array(
 				"评审专家一id" => $teachers[0],
 				"评审专家二id" => $teachers[1]);
