@@ -84,10 +84,10 @@
 	        $applicationStauts = $this -> getApplicationStatus($userid);		
 	        if($applicationStauts["isSchoolSubmitted"]){		
 	            if($applicationStauts["isAccedpted"]){		
-	                $applicationStautsText = "已通过";		
+	                $applicationStautsText = "通过";		
 	            }		
 	            else{		
-	                $applicationStautsText = "已拒绝";		
+	                $applicationStautsText = "拒绝";		
 	            }		
 	        }		
 	        else{		

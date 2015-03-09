@@ -10,6 +10,7 @@
     //ini_set('display_errors', 'On');
 
     // 引用文件
+    require_once("../../phpLibrary/application.php");
     require_once("../../phpLibrary/users.php");
     require_once("../../phpLibrary/notorm-master/NotORM.php");
 
@@ -34,6 +35,10 @@
             $result = $records->update($data);
         }
     }
+
+    $app = new Application($db);
+    $apply_status = $app -> getApplicationStatusText($userId);
+    
     //获取该学生提交的评审申请
     $stu_apply = $application->where("学生id",$_GET["userId"])->order("id DESC")->limit(1,0);
     //echo $stu_apply;
@@ -133,7 +138,7 @@
                 <div class="col-lg-12">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                           当前状态：<b><font color="#6495ED">待填写学院意见</font></b>
+                           当前状态：<b><font color="#6495ED"><?php echo $apply_status; ?></font></b>
                         </div>
                         <div class="panel-body">
                             <div class="row">
