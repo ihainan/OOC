@@ -49,7 +49,7 @@
 				$isStudentSubmitted = true;		
 		
 				// 检查导师是否已经提交		
-				$applicationForm = $applicationForms[1];		
+				$applicationForm = $applicationForms[0];
 		
 				if(isset($applicationForm["导师意见"])){		
 					$isTeacherSubmitted = true;		

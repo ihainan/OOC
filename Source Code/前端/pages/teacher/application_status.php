@@ -18,13 +18,7 @@
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     $pdo->exec('set names utf8');
     $db = new NotORM($pdo);
-    // 初始化 Users 类
-    $users = new Users($db);
 
-    //echo $_GET['userId'];
-
-    $studentInfo = $users->getStudentInfo($_COOKIE["username"]);
-    //print_r($studentInfo);
     $application = $db->评审申请();
     $userId = $_GET["userId"];
     //echo $userId;
@@ -33,15 +27,16 @@
             //print_r($_POST);
             $data = array(
             "导师意见" => $_POST["teacherReview"]);
-            echo $application->where("学生id",$_GET["userId"])->update($data);
-            $result = $application->where("学生id",$_GET["userId"])->update($data);
+
+            $records = $application->where("学生id",$_GET["userId"]);
+            $result = $records->update($data);
         }
     }
     //获取该学生提交的评审申请
     $stu_apply = $application->where("学生id",$_GET["userId"])->order("id DESC")->limit(1,0);
     //echo $stu_apply;
     $last_apply = $stu_apply->fetch();
-    
+    print_r($last_apply);
 ?>
 
 <!DOCTYPE html>
@@ -153,11 +148,11 @@
                                         </div>
                                         <div class="form-group">
                                             <label>导师意见：</label>
-                                            <textarea name ="teacherReview" class="form-control" rows="5" <?php if(!empty($value['导师意见'])){echo "disabled";}?>>写得非常好！</textarea>
+                                            <textarea name ="teacherReview" class="form-control" rows="5" <?php if(!empty($last_apply['导师意见'])){echo "disabled";}?>>写得非常好！</textarea>
                                         </div>
                                          <button type="submit" class="btn btn-default">导出文档</button>
-                                        <button type="submit" class="btn btn-default" <?php if(!empty($value['导师意见'])){echo "disabled";}?>>提交</button>
-                                        <button type="reset" class="btn btn-default" <?php if(!empty($value['导师意见'])){echo "disabled";}?>>重置</button>
+                                        <button type="submit" class="btn btn-default" <?php if(!empty($last_apply['导师意见'])){echo "disabled";}?>>提交</button>
+                                        <button type="reset" class="btn btn-default" <?php if(!empty($last_apply['导师意见'])){echo "disabled";}?>>重置</button>
                                     </form>
                                 </div>
                                

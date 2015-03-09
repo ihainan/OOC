@@ -1,3 +1,46 @@
+<?php
+    // print_r($_COOKIE);
+    if(strcmp($_COOKIE["role"],"学院管理人员")){
+       header("refresh:3;url=../login.php");
+       echo "无权限浏览此页，3秒后跳转...";
+       exit();
+      }
+      // 开启错误提示
+    //error_reporting(E_ALL);
+    //ini_set('display_errors', 'On');
+
+    // 引用文件
+    require_once("../../phpLibrary/users.php");
+    require_once("../../phpLibrary/notorm-master/NotORM.php");
+
+    // 初始化数据库
+    $pdo = new PDO('mysql:host=lab.ihainan.me;dbname=blind_review_db','ss','123456');
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $pdo->exec('set names utf8');
+    $db = new NotORM($pdo);
+
+    $application = $db->评审申请();
+    $userId = $_GET["userid"];
+    //echo $_POST["optionsRadiosInline"];
+    if($_GET["action"] == "review"){//判断用户是否执行提交操作
+        if(!empty($_POST)){
+            //print_r($_POST);
+
+            $data = array(
+                "审核状态" => $_POST["optionsRadiosInline"],
+                "学院意见" => $_POST["schoolReview"]);
+
+            $records = $application->where("学生id",$_GET["userId"]);
+            $result = $records->update($data);
+        }
+    }
+    //获取该学生提交的评审申请
+    $stu_apply = $application->where("学生id",$_GET["userId"])->order("id DESC")->limit(1,0);
+    //echo $stu_apply;
+    $last_apply = $stu_apply->fetch();
+    print_r($last_apply);
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -95,7 +138,7 @@
                         <div class="panel-body">
                             <div class="row">
                                 <div class="col-lg-6">
-                                    <form role="form">
+                                    <form role="form" action="application_status.php?action=review&userId=<?php echo $userId; ?>" method="post">
                                         <div class="form-group">
                                             <label>论文题目：</label>
                                             <input class="form-control" value="《一个非常屌的论文题目》" disabled>
@@ -110,21 +153,21 @@
                                         </div>
                                         <div class="form-group">
                                             <label>学院意见：</label>
-                                            <textarea class="form-control" rows="5" >写得非常好！</textarea>
+                                            <textarea name ="schoolReview" class="form-control" rows="5" <?php if(!empty($last_apply['学院意见'])){echo "disabled";}?>>写得非常好！</textarea>
                                             <div class="form-group">
                                             <label>审核结果</label>
                                             <label class="radio-inline">
-                                                <input type="radio" name="optionsRadiosInline" id="optionsRadiosInline1" value="option1" checked=""> 批准
+                                                <input type="radio" name="optionsRadiosInline" id="optionsRadiosInline1" value="已通过" <?php if(!empty($last_apply['学院意见'])){echo "disabled";}?>> 批准
                                             </label>
                                             <label class="radio-inline">
-                                                <input type="radio" name="optionsRadiosInline" id="optionsRadiosInline2" value="option2"> 拒绝
+                                                <input type="radio" name="optionsRadiosInline" id="optionsRadiosInline2" value="已拒绝" <?php if(!empty($last_apply['学院意见'])){echo "disabled";} ?>> 拒绝
                                             </label>
                                             
                                         </div>
                                         </div>
                                         <button type="submit" class="btn btn-default">导出文档</button>
-                                        <button type="submit" class="btn btn-default">提交</button>
-                                        <button type="reset" class="btn btn-default">重置</button>
+                                        <button type="submit" class="btn btn-default"  <?php if(strcmp($last_apply['审核状态'], "已通过")){echo "checked";} if(!empty($last_apply['学院意见'])){echo "disabled";}?>>提交</button>
+                                        <button type="reset" class="btn btn-default"  <?php if(strcmp($last_apply['审核状态'], "已拒绝")){echo "checked";} if(!empty($last_apply['学院意见'])){echo "disabled";}?>>重置</button>
                                     </form>
                                 </div>
                                

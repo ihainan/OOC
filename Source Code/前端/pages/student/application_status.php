@@ -25,7 +25,7 @@
     $users = new Users($db);
     $application = new Application($db);
     $apply_status = $application -> getApplicationStatusText($_COOKIE["username"]);
-
+    print_r($application -> getApplicationStatus($_COOKIE["username"]));
     $studentInfo = $users->getStudentInfo($_COOKIE["username"]);
     //print_r($studentInfo);
     $application = $db->评审申请();
@@ -101,10 +101,10 @@
                             <a href="#"><i class="fa fa-file-text-o fa-fw"></i> 审核申请<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
-                                    <a href="application_form.html"> 填写申请</a>
+                                    <a href="application_form.php"> 填写申请</a>
                                 </li>
                                 <li>
-                                    <a href="application_status.html"> 审核状态</a>
+                                    <a href="application_status.php"> 审核状态</a>
                                 </li>
                             </ul>
                             <!-- /.nav-second-level -->
