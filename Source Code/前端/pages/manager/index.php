@@ -35,6 +35,18 @@
 
     // 获取用户收到的消息
     $userMessages = $message -> getUserMessage($_COOKIE["username"]);
+
+    //学生个数
+    $stu_num = count($db->学生表());
+
+    //评审申请表个数
+    $apply_num = count($db->评审申请);
+
+    //评审信息表个数
+    $info_num = count($db->评审信息类());
+
+    //修改说明书个数
+    $modify_num = count($db->修改说明类);
 ?>
 <html lang="en">
 
@@ -137,12 +149,12 @@
                                     <i class="fa fa-user fa-5x"></i>
                                 </div>
                                 <div class="col-xs-9 text-right">
-                                    <div class="huge">15</div>
+                                    <div class="huge"><?php echo $stu_num;?></div>
                                     <div>学生</div>
                                 </div>
                             </div>
                         </div>
-                        <a href="#">
+                        <a href="students.php">
                             <div class="panel-footer">
                                 <span class="pull-left">查看详情</span>
                                 <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
@@ -159,12 +171,12 @@
                                     <i class="fa fa-list fa-5x"></i>
                                 </div>
                                 <div class="col-xs-9 text-right">
-                                    <div class="huge">12</div>
+                                    <div class="huge"><?php echo $apply_num;?></div>
                                     <div>评审申请表</div>
                                 </div>
                             </div>
                         </div>
-                        <a href="#">
+                        <a href="students.php">
                             <div class="panel-footer">
                                 <span class="pull-left">查看详情</span>
                                 <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
@@ -181,12 +193,12 @@
                                     <i class="fa fa-th-list fa-5x"></i>
                                 </div>
                                 <div class="col-xs-9 text-right">
-                                    <div class="huge">12</div>
+                                    <div class="huge"><?php echo $info_num;?></div>
                                     <div>评审信息表</div>
                                 </div>
                             </div>
                         </div>
-                        <a href="#">
+                        <a href="students.php">
                             <div class="panel-footer">
                                 <span class="pull-left">查看详情</span>
                                 <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
@@ -203,12 +215,12 @@
                                     <i class="fa fa-times fa-5x"></i>
                                 </div>
                                 <div class="col-xs-9 text-right">
-                                    <div class="huge">3</div>
+                                    <div class="huge"><?php echo $modify_num;?></div>
                                     <div>修改说明书</div>
                                 </div>
                             </div>
                         </div>
-                        <a href="#">
+                        <a href="students.php">
                             <div class="panel-footer">
                                 <span class="pull-left">查看详情</span>
                                 <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
