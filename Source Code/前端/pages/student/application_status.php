@@ -33,7 +33,7 @@
     $stu_apply = $application->where("学生id",$_COOKIE["username"])->order("id DESC")->limit(1,0);
     //echo $stu_apply;
     $last_apply = $stu_apply->fetch();
-    print_r($last_apply);
+    //print_r($last_apply);
     /*if($last_apply["开放审核申请id"] == $db->开放审核申请()->max("id")){
        $flag = $last_apply["审核状态"];
     }*/
