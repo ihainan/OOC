@@ -113,6 +113,9 @@
                             <a href="papers.php"><i class="fa fa-pencil-square-o fa-fw"></i> 审核论文</a>
                         </li>
                         <li>
+                            <a href="modification.php"><i class="fa fa-pencil fa-fw"></i> 审核修改</a>
+                        </li>
+                        <li>
                             <a href="profile.php"><i class="fa fa-user fa-fw"></i> 个人资料</a>
                         </li>
                         <li>

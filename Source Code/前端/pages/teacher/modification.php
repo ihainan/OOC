@@ -1,29 +1,46 @@
-<?php
-    // print_r($_COOKIE);
-    if(strcmp($_COOKIE["role"],"导师")){
-       header("refresh:3;url=../login.php");
-       echo "无权限浏览此页，3秒后跳转...";
-       exit();
-    }
+    <?php
+        // print_r($_COOKIE);
+        if(strcmp($_COOKIE["role"],"导师")){
+           header("refresh:3;url=../login.php");
+           echo "无权限浏览此页，3秒后跳转...";
+           exit();
+        }
 
-    // 开启错误提示
-    error_reporting(E_ALL);
-    ini_set('display_errors', 'On');
+        // 开启错误提示
+        error_reporting(E_ALL);
+        ini_set('display_errors', 'On');
 
-    // 引用文件
-    require_once("../../phpLibrary/studentInfo.php");
-    require_once("../../phpLibrary/notorm-master/NotORM.php");
+        // 引用文件
+        require_once("../../phpLibrary/users.php");
+        require_once("../../phpLibrary/message_class.php");
+        require_once("../../phpLibrary/notorm-master/NotORM.php");
+        require_once("../../phpLibrary/review_class.php");
+        require_once("../../phpLibrary/studentInfo.php");
 
-    // 初始化数据库
-    $pdo = new PDO('mysql:host=lab.ihainan.me;dbname=blind_review_db','ss','123456');
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $pdo->exec('set names utf8');
-    $db = new NotORM($pdo);
+        // 初始化数据库
+        $pdo = new PDO('mysql:host=lab.ihainan.me;dbname=blind_review_db','ss','123456');
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $pdo->exec('set names utf8');
+        $db = new NotORM($pdo);
 
-    $studentinfo = new studentInfo($db);
-    $arry = $studentinfo->getStudentInfo($_COOKIE["username"]);
-    //print_r($arry);
-?>
+        $review = new Review($db);
+        $modifications = $review -> getModifications($_COOKIE["username"]);
+
+        // 更新学术不端检测结果
+        if(array_key_exists("修改审核结果", $_GET)
+            && array_key_exists("userId", $_GET)
+            && array_key_exists("expert", $_GET)){
+            if($_GET["修改审核结果"] != "未设置"){
+                if($_GET["expert"] == 1){
+                    $review -> updateExperOnetModifyReview($_GET["userId"], $_GET["修改审核结果"]);
+                }
+                else{
+                    $review -> updateExperTwotModifyReview($_GET["userId"], $_GET["修改审核结果"]);
+                }
+            }
+        }
+    ?>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -114,7 +131,7 @@
         <div id="page-wrapper">
             <div class="row">
                 <div class="col-lg-12">
-                    <h1 class="page-header">学生列表</h1>
+                    <h1 class="page-header">审核修改列表</h1>
                 </div>
                 <!-- /.col-lg-12 -->
             </div>
@@ -123,7 +140,7 @@
                 <div class="col-lg-12">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            所有学生
+                            所有论文
 
                         </div>
 
@@ -133,34 +150,40 @@
                                 <table class="table table-striped table-bordered table-hover" id="dataTables-example">
                                     <thead>
                                         <tr>
-                                            <th>姓名</th>
-                                            <th>学号</th>
-                                            <th>申请表</th>
-                                            <th>论文审核</th>
+                                            <th>论文编号</th>
+                                            <th>论文标题</th>
+                                            <th>修改说明</th>
+                                            <th>下载</th>
+                                            <th>评分</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                    <?php
-                                    $i = 0;
-                                    foreach ($arry as $key => $value) {
-                                        if($i%2){//奇数行
-                                        echo "<tr class="."even gradeC".">";
-                                        }else{//偶数行
-                                        echo "<tr class="."odd gradeA".">";
-                                        }
-                                        echo "<td>".$value["姓名"]."</td>";
-                                        echo "<td class="."center".">".$value["学号"]."</td>";
-                                        $link = "application_status.php?userId=".$value["学生id"];
-                                        echo "<td class="."center".">".$value["申请表"]."（<a href= $link".">查看详情</a>）</td>";
-                                        if($value["论文审核"] == "暂未更新")
-                                            echo "<td>暂未更新</td>";
-                                        else if($value["论文审核"] == "论文已上传"){
-                                            $link = "../uploads/".$value["学号"]."_".date("Y").".docx";
-                                            echo "<td class="."center".">论文已上传（<a href=".$link.">查看详情</a>）</td>";
-                                        }
-                                        echo "</tr>";
-                                    }
-                                    ?>
+                                        <?php 
+                                            foreach ($modifications as $modification) {
+                                        ?>
+                                            <tr class="even gradeC">
+                                                <td><?php echo $modification["论文编号"];?></td>
+                                                <td class="center"><?php echo $modification["论文题目"];?></td>
+                                                <td class="center"><?php echo $modification["修改说明"];?></td>
+                                                <td><a href="<?php echo $modification["下载链接"];?>">点此下载论文</a></td>
+                                                <td>
+                                                    <form action="#.php" method="get">
+                                                        <input type="hidden" name = "userId" value = "<?php echo $modification["学生id"];?>" length = "0"/>
+                                                        <input type="hidden" name = "expert" value = "<?php echo $modification["专家编号"];?>" length = "0"/>
+                                                        <select class="form-contrl" name = "修改审核结果">
+                                                            <option <?php if($modification["修改审核结果"] == "") echo "selected"?>>未设置</option>
+                                                            <option <?php if($modification["修改审核结果"] == "通过") echo "selected"?>>通过</option>
+                                                            <option <?php if($modification["修改审核结果"] == "不通过") echo "selected"?>>不通过</option>
+                                                        </select>
+                                                         <input type="submit" value="保存"/>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        <?php        
+                                            }
+                                        ?>
+                                        
+                             
                                     </tbody>
                                 </table>
                             </div>

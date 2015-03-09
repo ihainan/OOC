@@ -1,3 +1,32 @@
+<?php
+    // print_r($_COOKIE);
+    if(strcmp($_COOKIE["role"],"导师")){
+       header("refresh:3;url=../login.php");
+       echo "无权限浏览此页，3秒后跳转...";
+       exit();
+    }
+
+    // 开启错误提示
+    error_reporting(E_ALL);
+    ini_set('display_errors', 'On');
+
+    // 引用文件
+    require_once("../../phpLibrary/users.php");
+    require_once("../../phpLibrary/message_class.php");
+    require_once("../../phpLibrary/notorm-master/NotORM.php");
+    require_once("../../phpLibrary/review_class.php");
+    require_once("../../phpLibrary/studentInfo.php");
+
+    // 初始化数据库
+    $pdo = new PDO('mysql:host=lab.ihainan.me;dbname=blind_review_db','ss','123456');
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $pdo->exec('set names utf8');
+    $db = new NotORM($pdo);
+
+    $review = new Review($db);
+    $papers = $review -> getReviewPapers($_COOKIE["username"]);
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -71,6 +100,9 @@
                             <a href="papers.php"><i class="fa fa-pencil-square-o fa-fw"></i> 审核论文</a>
                         </li>
                         <li>
+                            <a href="modification.php"><i class="fa fa-pencil fa-fw"></i> 审核修改</a>
+                        </li>
+                        <li>
                             <a href="profile.php"><i class="fa fa-user fa-fw"></i> 个人资料</a>
                         </li>
                         <li>
@@ -112,13 +144,19 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-
-                                        <tr class="even gradeC">
-                                            <td>1</td>
-                                            <td class="center">《论三个代表重要思想在大数据计算中的具体应用》</td>
-                                            <td class="center">戴三个表；大数据；</td>
-                                            <td><a href="#">点此下载论文</a></td>
-                                        </tr>
+                                        <?php
+                                            foreach($papers as $paper) {
+                                        ?>
+                                            <tr class="even gradeC">
+                                                <td><?php echo $paper["论文编号"]?></td>
+                                                <td class="center"><?php echo $paper["论文题目"]; ?></td>
+                                                <td class="center"><?php echo $paper["论文关键字"]; ?></td>
+                                                <td><a href="<?php echo $paper["下载链接"]; ?>">点此下载论文</a></td>
+                                            </tr>
+                                        <?php
+                                            }
+                                        ?>
+                                        
                              
                                     </tbody>
                                 </table>

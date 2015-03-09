@@ -86,7 +86,6 @@
 			$teachers = array();
 
 			// 获取学生论文的关键字
-			// 寻找最合适的两位导师，存在数组 teachers，得到其 ID 号
 			/* 直接分配给两位导师(记得修改) */
 
 			//获取论文关键字
@@ -184,7 +183,7 @@
 			// 检查专家二是否已经给分，如果已经给分，则根据分数判断是否需要修改
 			$scoreB = $result["评审专家二意见"];
 
-			// 如果都是 A，则更新评审信息表中的 “修改说明” 为无需修改，信息表中的 “学院意见” 为同意
+			// 如果都是 A，更新信息表中的 “学院意见” 为同意
 			if($scoreB == "A" && $score == "A"){
 				$data_f = array("学院意见" => "同意");
 				$this -> db -> 评审信息类() -> where("学生id", $userid) -> update($data_f);
@@ -229,7 +228,7 @@
 			// 检查专家二是否已经给分，如果已经给分，则根据分数判断是否需要修改
 			$scoreB = $result["评审专家一意见"];
 			
-			// 如果都是 A，则更新评审信息表中的 “修改说明” 为无需修改，信息表中的 “学院意见” 为同意
+			// 如果都是 A，信息表中的 “学院意见” 为同意
 			if($scoreB == "A" && $score == "A"){
 				$data_f = array("学院意见" => "同意");
 				$this -> db -> 评审信息类() -> where("学生id", $userid) -> update($data_f);
@@ -247,52 +246,182 @@
 			}
 		}
 
-		/* 更新导师一的修改审核结果 */
-		/* 返回： */
+		/**
+		// 函数: updateExperOnetModifyReview($userid, $reviewContent)
+		// 功能：更新导师一的修改审核结果
+		// 返回：无
+		 **/
 		public function updateExperOnetModifyReview($userid, $reviewContent){
 			// 检查评审信息表中的 “学院意见” 是否为不同意，是的话，直接返回
 			$result = $this -> getReviewResult($userid);
+
+			// 修改评审信息表中的 "专家一修改说明" 
+			$mData = array("专家一修改说明" => $reviewContent);
+			$result -> update($mData);
 			if($result["学院意见"] == "拒绝")
 				return;
+
 			// 否则，若 $reviewContent 为不通过，则直接更新评审信息表中的 “学院意见” 为拒绝
 			if($reviewContent == "不通过"){
 				$mData = array("学院意见" => "拒绝");
 				$result -> update($mData);
 			}
-			// 否则，检查评审信息表中的 “修改说明” 是否为“专家二通过修改”，是的话，直接更新评审信息表中的 “学院意见” 为同意
-			if($result["修改说明"] == "专家二通过修改"){
-				$mData = array("学院意见" => "同意");
-				$result -> update($mData);
-			}
 			else{
-				// 否则，修改评审信息表中的 “修改说明” 是否为“专家一通过修改”
-				$mData = array("修改说明" => "专家一通过修改");
-				$result -> update($mData);
-			}
+				// 否则，检查评审信息表中的 "专家二修改说明" 是否为“通过”，是的话，直接更新评审信息表中的 “学院意见” 为同意
+				if($result["专家二修改说明"] == "通过"){
+					$mData = array("学院意见" => "同意");
+					$result -> update($mData);
+				}
+			}	
 		}
 
-
-		/* 更新导师一的修改审核结果 */
-		/* 返回： */
+		/**
+		// 函数: updateExperTwotModifyReview($userid, $reviewContent)
+		// 功能：更新导师二的修改审核结果
+		// 返回：无
+		 **/
 		public function updateExperTwotModifyReview($userid, $reviewContent){
-						// 检查评审信息表中的 “学院意见” 是否为不同意，是的话，直接返回
+			// 检查评审信息表中的 “学院意见” 是否为不同意，是的话，直接返回
 			$result = $this -> getReviewResult($userid);
+
+			// 修改评审信息表中的 "专家一修改说明" 
+			$mData = array("专家二修改说明" => $reviewContent);
+			$result -> update($mData);
 			if($result["学院意见"] == "拒绝")
 				return;
+
 			// 否则，若 $reviewContent 为不通过，则直接更新评审信息表中的 “学院意见” 为拒绝
 			if($reviewContent == "不通过"){
 				$mData = array("学院意见" => "拒绝");
 				$result -> update($mData);
 			}
-			// 否则，检查评审信息表中的 “修改说明” 是否为“专家一通过修改”，是的话，直接更新评审信息表中的 “学院意见” 为同意
-			if($result["修改说明"] == "专家一通过修改"){
-				$mData = array("学院意见" => "同意");
-				$result -> update($mData);
-			}
 			else{
-				// 否则，修改评审信息表中的 “修改说明” 是否为“专家二通过修改”
-				$mData = array("修改说明" => "专家二通过修改");
-				$result -> update($mData);
+				// 否则，检查评审信息表中的 "专家二修改说明" 是否为“通过”，是的话，直接更新评审信息表中的 “学院意见” 为同意
+				if($result["专家一修改说明"] == "通过"){
+					$mData = array("学院意见" => "同意");
+					$result -> update($mData);
+				}
+			}	
+		}
+
+		/**
+		// 函数: getModifications($teacherid)
+		// 功能：获取导师所有需要审核的修改说明
+		// 返回：无
+		 **/
+		public function getModifications($teacherid){
+			$modifications = array();
+			// 根据导师 id 从论文评阅书中获取所有的评审信息类 id
+			$revs = $this -> db -> 论文评阅书() -> where("评审人id", $teacherid);
+			foreach ($revs as $rev) {
+				// 根据评审信息类 id 获取对应的评审信息类
+				$inf = $this -> db -> 评审信息类() -> where("id", $rev["评审信息类id"]) -> fetch();
+
+				// 判断自己是专家一还是专家
+				// echo $teacherid;
+				if($inf["评审专家一id"] == $teacherid){
+					$expertNo = 1;
+					$modification["专家编号"] = 1;
+					$modification["修改审核结果"] = $inf["专家一修改说明"];
+				}
+				else{
+					$expertNo = 2;
+					$modification["专家编号"] = 2;
+					$modification["修改审核结果"] = $inf["专家二修改说明"];
+				}
+				
+				// 根据评审信息类 id 从论文表中获取论文内容（包含论文 id）
+				$paper = $this -> db -> 论文表() -> where("评审信息表id", $rev["评审信息类id"]) -> fetch();
+				$modification["论文编号"] = $paper["学生id"]."_".$paper["年份"];
+
+				// 根据学生 ID 从论文申请中获取论文标题
+				$application =  $this -> db -> 
+					评审申请() -> where("学生id",$paper["学生id"]) -> fetch();
+				$modification["论文题目"] = $application["论文题目"];
+
+				// 根据论文 id 从修改说明类中获取修改说明内容
+				// print_r($paper["学生id"]);
+				$mod = $this -> db -> 修改说明类() -> where("论文id", $paper["学生id"]) -> fetch();
+				$modification["修改说明"] = $mod["修改说明"];
+
+				// 其他
+				$modification["下载链接"] = "../uploads/".$modification["论文编号"].".docx";
+				$modification["学生id"] = $paper["学生id"];
+				// print_r($modification);
+				// echo "<br/>";
+				array_push($modifications, $modification);
+			}
+			return $modifications;
+		}
+
+		/**
+		// 函数: getReviewPapers($teacherid)
+		// 功能：获取导师所有需要审核的论文
+		// 返回：无
+		 **/
+		public function getReviewPapers($teacherid){
+			$reviewPapers = array();
+			// 根据导师 id 从论文评阅书中获取所有的评审信息类 id
+			$revs = $this -> db -> 论文评阅书() -> where("评审人id", $teacherid);
+			foreach ($revs as $rev) {
+				// 根据评审信息类 id 获取对应的评审信息类
+				$inf = $this -> db -> 评审信息类() -> where("id", $rev["评审信息类id"]) -> fetch();
+
+				// 根据评审信息类 id 从论文表中获取论文内容（包含论文 id）
+				$paper = $this -> db -> 论文表() -> where("评审信息表id", $rev["评审信息类id"]) -> fetch();
+				$revPaper["论文编号"] = $paper["学生id"]."_".$paper["年份"];
+
+				// 根据学生 ID 从论文申请中获取论文标题
+				$application =  $this -> db -> 
+					评审申请() -> where("学生id", $paper["学生id"]) -> fetch();
+				$revPaper["论文题目"] = $application["论文题目"];
+				$revPaper["论文关键字"] = $paper["关键字"];
+
+				// 其他
+				$revPaper["下载链接"] = "../uploads/".$revPaper["论文编号"].".docx";
+
+				// print_r($reviewPapers);
+				array_push($reviewPapers, $revPaper);
+			}
+			return $reviewPapers;
+		}
+
+		/**
+		// 函数: getStudentReviewResult($userid)
+		// 功能：获取论文审核结果
+		// 返回：无
+		 **/
+		public function getStudentReviewResult($userid){
+			// 根据学生 ID 从论文申请中获取论文标题
+			$application =  $this -> db -> 
+				评审申请() -> where("学生id", $userid) -> fetch();
+			$result["论文题目"] = $application["论文题目"];
+			$result["论文摘要"] = $application["论文摘要"];
+
+
+
+			
+			$review = $this -> getReviewResult($userid);
+			// 获得学术不端检测结果
+			$result["学术不端检测结果"] = $review["学术不端检测结果"];
+			// 获取专家打分
+			$result["评审专家一分数"] = $review["评审专家一意见"];
+			$result["评审专家二分数"] = $review["评审专家二意见"];
+			$result["结果"] = $review["学院意见"];
+
+			// 获取审核信息表中的专家意见
+			$expertReviews = $this -> db -> 论文评阅书() -> where("评审信息类id", $review["id"]);
+			$expertOneReview = $this -> db -> 论文评阅书() -> where("评审信息类id", $review["id"]) -> where("评审人id", $review["评审专家一id"]) -> fetch();
+			$expertTwoReview = $this -> db -> 论文评阅书() -> where("评审信息类id", $review["id"]) -> where("评审人id", $review["评审专家二id"]) -> fetch();
+			$result["评审专家一意见"] = $expertOneReview["学术评语"];
+			$result["评审专家二意见"] = $expertTwoReview["学术评语"];
+
+			return $result;
+		}		
+
+		public function getFirstItem($items){
+			foreach ($items as $item) {
+				return item;
 			}
 		}
 	}

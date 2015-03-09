@@ -162,17 +162,17 @@
                                             <div class="form-group">
                                             <label>审核结果</label>
                                             <label class="radio-inline">
-                                                <input type="radio" name="optionsRadiosInline" id="optionsRadiosInline1" value="已通过" <?php if(!empty($last_apply['学院意见'])){echo "disabled";}?>> 批准
+                                                <input type="radio" name="optionsRadiosInline" id="optionsRadiosInline1" value="通过" <?php if(!empty($last_apply['学院意见'])){echo "disabled";}?>> 批准
                                             </label>
                                             <label class="radio-inline">
-                                                <input type="radio" name="optionsRadiosInline" id="optionsRadiosInline2" value="已拒绝" <?php if(!empty($last_apply['学院意见'])){echo "disabled";} ?>> 拒绝
+                                                <input type="radio" name="optionsRadiosInline" id="optionsRadiosInline2" value="拒绝" <?php if(!empty($last_apply['学院意见'])){echo "disabled";} ?>> 拒绝
                                             </label>
                                             
                                         </div>
                                         </div>
                                         <button type="submit" class="btn btn-default">导出文档</button>
-                                        <button type="submit" class="btn btn-default"  <?php if(strcmp($last_apply['审核状态'], "已通过")){echo "checked";} if(!empty($last_apply['学院意见'])){echo "disabled";}?>>提交</button>
-                                        <button type="reset" class="btn btn-default"  <?php if(strcmp($last_apply['审核状态'], "已拒绝")){echo "checked";} if(!empty($last_apply['学院意见'])){echo "disabled";}?>>重置</button>
+                                        <button type="submit" class="btn btn-default"  <?php if(strcmp($last_apply['审核状态'], "通过")){echo "checked";} if(!empty($last_apply['学院意见'])){echo "disabled";}?>>提交</button>
+                                        <button type="reset" class="btn btn-default"  <?php if(strcmp($last_apply['审核状态'], "拒绝")){echo "checked";} if(!empty($last_apply['学院意见'])){echo "disabled";}?>>重置</button>
                                     </form>
                                 </div>
                                
