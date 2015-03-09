@@ -10,6 +10,23 @@
     require_once ("../../phpLibrary/mysql.php");
     //require_once ("../../phpLibrary/cookie.php");
     if(!empty($_GET["bday"])){
+        // Cookie 操作，存储近期操作
+        if(array_key_exists("recent_operations", $_COOKIE)){
+            $oldArray = unserialize($_COOKIE['recent_operations']);
+            $oldArray[time()] = "开放了一个申请";
+            setcookie("recent_operations", 
+                serialize($oldArray),
+                time() + 3600,
+                "/");
+        }
+        else{
+            
+            $emptyArray = array(time() => "开放了一个申请");
+            setcookie("recent_operations", 
+                serialize($emptyArray),
+                time() + 3600,
+                "/"); 
+        }
         $bday = $_GET["bday"];
         $open_application = $db->开放审核申请();
         $data = array(
@@ -23,7 +40,7 @@
                 "消息内容" => "论文审核申请已经开始，请同学们在".$bday."前完成申请。",
                 "消息接受用户id" => "*");
             $msg_result = $sent_message->insert($message);
-            echo $msg_result["id"];
+            // echo $msg_result["id"];
         }
         //echo $result["id"];
     }
