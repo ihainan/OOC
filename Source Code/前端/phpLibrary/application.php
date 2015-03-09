@@ -54,12 +54,11 @@
 					break;
 				}
 				// $applicationForm = $applicationForms[0];
-				// print_r($applicationForm) ;
-				if(isset($applicationForm["导师意见"])){	
+				if(!empty($applicationForm["导师意见"])){	
 					$isTeacherSubmitted = true;		
-					if(isset($applicationForm["学院意见"])){		
+					if(!empty($applicationForm["学院意见"])){
 						$isSchoolSubmitted = true;		
-						if(isset($applicationForm["审核状态"]) && $applicationForm["审核状态"] == "通过"){		
+						if(!empty($applicationForm["审核状态"]) && $applicationForm["审核状态"] == "通过"){		
 							$isAccedpted = true;		
 						}
 					}		
