@@ -48,16 +48,19 @@
 			if(sizeof($applicationForms) > 0){		
 				$isStudentSubmitted = true;		
 		
-				// 检查导师是否已经提交		
-				$applicationForm = $applicationForms[0];
-		
-				if(isset($applicationForm["导师意见"])){		
+				// 检查导师是否已经提交	
+				foreach ($applicationForms as $item) {
+					$applicationForm = $item;
+					break;
+				}
+				// $applicationForm = $applicationForms[0];
+				if(!empty($applicationForm["导师意见"])){	
 					$isTeacherSubmitted = true;		
-					if(isset($applicationForm["学院意见"])){		
+					if(!empty($applicationForm["学院意见"])){
 						$isSchoolSubmitted = true;		
-						if(isset($applicationForm["审核状态"]) && $applicationForm["审核状态"] == "通过"){		
+						if(!empty($applicationForm["审核状态"]) && $applicationForm["审核状态"] == "通过"){		
 							$isAccedpted = true;		
-						}		
+						}
 					}		
 				}		
 			}		
@@ -81,10 +84,10 @@
 	        $applicationStauts = $this -> getApplicationStatus($userid);		
 	        if($applicationStauts["isSchoolSubmitted"]){		
 	            if($applicationStauts["isAccedpted"]){		
-	                $applicationStautsText = "已通过";		
+	                $applicationStautsText = "通过";		
 	            }		
 	            else{		
-	                $applicationStautsText = "已拒绝";		
+	                $applicationStautsText = "拒绝";		
 	            }		
 	        }		
 	        else{		
