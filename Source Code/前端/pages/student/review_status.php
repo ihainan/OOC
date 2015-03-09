@@ -1,3 +1,32 @@
+<?php
+    // print_r($_COOKIE);
+    if(strcmp($_COOKIE["role"],"学生")){
+       header("refresh:3;url=../login.php");
+       echo "无权限浏览此页，3秒后跳转...";
+       exit();
+    }
+
+    // 开启错误提示
+    error_reporting(E_ALL);
+    ini_set('display_errors', 'On');
+
+    // 引用文件
+    require_once("../../phpLibrary/users.php");
+    require_once("../../phpLibrary/message_class.php");
+    require_once("../../phpLibrary/notorm-master/NotORM.php");
+    require_once("../../phpLibrary/Application.php");
+    require_once("../..//phpLibrary/review_class.php");
+
+    // 初始化数据库
+    $pdo = new PDO('mysql:host=lab.ihainan.me;dbname=blind_review_db','ss','123456');
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $pdo->exec('set names utf8');
+    $db = new NotORM($pdo);
+
+    // 初始化 Review 类
+    $review = new review($db);
+    $result = $review -> getStudentReviewResult($_COOKIE["username"]);
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -110,7 +139,7 @@
                 <div class="col-lg-12">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                           当前状态：<b><font color="#6495ED">同意通过论文评审</font></b>
+                           当前状态：<b><font color="#6495ED"><?php echo $result["结果"];?></font></b>
                         </div>
                         <div class="panel-body">
                             <div class="row">
@@ -118,45 +147,47 @@
                                     <form role="form">
                                         <div class="form-group">
                                             <label>论文题目：</label>
-                                            <input class="form-control" value="《一个非常屌的论文题目》">
+                                            <input class="form-control" value="<?php echo $result["论文题目"];?>" disabled>
                                         </div>
                                         <div class="form-group">
                                             <label>论文摘要：</label>
-                                            <textarea class="form-control" rows="5" disabled>一个非常屌的论文摘要</textarea> 
+                                            <textarea class="form-control" rows="5" disabled><?php echo $result["论文摘要"];?></textarea> 
                                         </div>
                                         <div class="form-group">
                                             <label>学术不端文献检测系统检测结果：</label>
                                             <div class="radio">
                                                 <label>
-                                                    <input type="radio" name="optionsRadios" id="optionsRadios1" value="option1"  disabled>&nbsp;高于 25%,评审不通过
+                                                    <input type="radio" name="optionsRadios" id="optionsRadios1" value="option1"  disabled
+                                                    <?php if($result["学术不端检测结果"] == "高于 25%,评审不通过") echo "checked"?>
+                                                    >&nbsp;高于 25%,评审不通过
                                                 </label>
                                             </div>
                                             <div class="radio">
                                                 <label>
-                                                    <input type="radio" name="optionsRadios" id="optionsRadios2" value="option2" disabled>&nbsp;低于 25%,论文主体部分重合率高
+                                                    <input type="radio" name="optionsRadios" id="optionsRadios2" value="option2" disabled <?php if($result["学术不端检测结果"] == "低于 25%,论文主体部分重合率高") echo "checked"?> >&nbsp;低于 25%,论文主体部分重合率高
                                                 </label>
                                             </div>
                                             <div class="radio">
                                                 <label>
-                                                    <input type="radio" name="optionsRadios" id="optionsRadios3" value="option3" checked>&nbsp;低于 25%,绪论及文献综述部分重合率高
+                                                    <input type="radio" name="optionsRadios" id="optionsRadios3" value="option3" disabled <?php if($result["学术不端检测结果"] == "低于 25%,绪论及文献综述部分重合率高") echo "checked"?>>&nbsp;低于 25%,绪论及文献综述部分重合率高
                                                 </label>
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label>评审专家一意见：</label>
-                                            <textarea class="form-control" rows="5" disabled>写得非常好！</textarea>
+                                            <textarea class="form-control" rows="5" disabled><?php echo $result["评审专家一意见"];?></textarea>
                                         </div>
                                         <div class="form-group">
                                             <label>评审专家一分数：</label>
-                                            <input class="form-control" value="A" disabled>
+                                            <input class="form-control" value="<?php echo $result["评审专家一分数"];?>" disabled>
                                         </div>
                                         <div class="form-group">
                                             <label>评审专家二意见：</label>
-                                            <textarea class="form-control" rows="5" disabled>写得相当好！</textarea>
+                                            <textarea class="form-control" rows="5" disabled><?php echo $result["评审专家二意见"];?></textarea>
                                         </div>
                                         <div class="form-group">
                                             <label>评审专家二分数：</label>
-                                            <input class="form-control" value="A" disabled>
+                                            <input class="form-control" value="<?php echo $result["评审专家二分数"];?>" disabled>
                                         </div>
                                     </form>
                                 </div>
@@ -188,14 +219,7 @@
 
     <!-- Custom Theme JavaScript -->
     <script src="../../dist/js/sb-admin-2.js"></script>
-    <script>
-        function winconfirm(){
-            question = confirm("确定登出本系统？")
-            if (question != "0"){
-             window.location = "../logout.php"
-            }
-        }
-    </script>
+
 </body>
 
 </html>

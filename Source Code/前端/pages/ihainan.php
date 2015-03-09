@@ -44,7 +44,7 @@
 	// 初始化 Review 类
 	
     $review = new review($db);
-    $r = $review -> getModifications("lilaoshi");
+    $r = $review -> getStudentReviewResult("2220140537");
     print_r($r);
     
 	?>

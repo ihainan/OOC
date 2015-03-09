@@ -353,6 +353,38 @@
 			return $reviewPapers;
 		}
 
+		/**
+		// 函数: getStudentReviewResult($userid)
+		// 功能：获取论文审核结果
+		// 返回：无
+		 **/
+		public function getStudentReviewResult($userid){
+			// 根据学生 ID 从论文申请中获取论文标题
+			$application =  $this -> db -> 
+				评审申请() -> where("学生id", $userid) -> fetch();
+			$result["论文题目"] = $application["论文题目"];
+			$result["论文摘要"] = $application["论文摘要"];
+
+
+
+			
+			$review = $this -> getReviewResult($userid);
+			// 获得学术不端检测结果
+			$result["学术不端检测结果"] = $review["学术不端检测结果"];
+			// 获取专家打分
+			$result["评审专家一分数"] = $review["评审专家一意见"];
+			$result["评审专家二分数"] = $review["评审专家二意见"];
+			$result["结果"] = $review["学院意见"];
+
+			// 获取审核信息表中的专家意见
+			$expertReviews = $this -> db -> 论文评阅书() -> where("评审信息类id", $review["id"]);
+			$expertOneReview = $this -> db -> 论文评阅书() -> where("评审信息类id", $review["id"]) -> where("评审人id", $review["评审专家一id"]) -> fetch();
+			$expertTwoReview = $this -> db -> 论文评阅书() -> where("评审信息类id", $review["id"]) -> where("评审人id", $review["评审专家二id"]) -> fetch();
+			$result["评审专家一意见"] = $expertOneReview["学术评语"];
+			$result["评审专家二意见"] = $expertTwoReview["学术评语"];
+
+			return $result;
+		}		
 
 		public function getFirstItem($items){
 			foreach ($items as $item) {
